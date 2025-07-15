@@ -722,6 +722,31 @@ function SampleRegistrationForm() {
 
         {/* Submit */}
         <div className="form-actions">
+        <button
+  type="button"
+  className="btn btn-secondary"
+  onClick={async () => {
+    const draftData = {
+      registrationType: registrationType === 'panel' ? 'Panel Company' : 'Self / Individual',
+      panelCompany: panelCompany,
+      senderDetails: registrationType === 'panel' ? {} : senderDetails,
+      companyDetails: registrationType === 'panel' ? companyDetails : {},
+      focalPersonDetails: registrationType === 'panel' ? focalPersonDetails : {},
+      deliveredVia,
+      packagingDetails: { ...packagingDetails, labelImage: undefined },
+      samples: samples.map((s) => ({ ...s, testTable: undefined })),
+      grandTotal,
+    };
+    await axios.post('http://localhost:5000/api/registrations/drafts', {
+      registrationNumber: 'PAFDA-25-000001',
+      draftData,
+    });
+    alert('Draft saved successfully!');
+  }}
+  disabled={submitting}
+>
+  Save as Draft
+</button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
             {submitting ? 'Submitting...' : 'Submit Registration'}
           </button>

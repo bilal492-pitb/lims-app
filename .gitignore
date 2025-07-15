@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build output
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Frontend build files
+frontend/build/
+frontend/dist/
+
+# Backend build files
+backend/build/
+backend/dist/
+
+# Test coverage reports
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Cache files
+.cache/
+.next/
+
+# Local development files
+.env.example

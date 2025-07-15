@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
+  password: process.env.DB_PASSWORD || 'root',
   database: process.env.DB_NAME || 'lims_db'
 });
 
@@ -34,4 +34,13 @@ router.get('/', (req, res) => {
   });
 });
 
+// Save draft
+router.post('/drafts', (req, res) => {
+  const { registrationNumber, draftData } = req.body;
+  const query = 'INSERT INTO drafts (registration_number, draft_data) VALUES (?, ?)';
+  db.query(query, [registrationNumber, JSON.stringify(draftData)], (err, result) => {
+    if (err) return res.status(400).json({ message: err.message });
+    res.status(201).json({ id: result.insertId, message: 'Draft saved successfully' });
+  });
+});
 module.exports = router;
