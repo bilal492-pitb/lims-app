@@ -7,7 +7,7 @@ dotenv.config();
 
 // First, let's try to connect as root to set up everything
 const rootDb = mysql.createConnection({
-  host: 'localhost',  // Explicitly use localhost
+  host: '192.168.99.252',  // Updated to Windows host IP
   user: 'root',
   password: 'root',   // Explicit password
   database: 'lims_db'
@@ -17,7 +17,7 @@ const rootDb = mysql.createConnection({
 
 // Now connect as lims_user
 const db = mysql.createConnection({
-  host: 'localhost',  // Explicitly use localhost
+  host: '192.168.99.252',  // Updated to Windows host IP
   user: 'lims_user',
   password: 'root',   // Explicit password
   database: 'lims_db'
@@ -30,7 +30,7 @@ rootDb.connect((rootErr) => {
     
     // If root connection fails, try with lims_user
     const db = mysql.createConnection({
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.DB_HOST || '192.168.99.252',
       user: 'lims_user',
       password: process.env.DB_PASSWORD || 'root', // Use consistent password
       database: process.env.DB_NAME || 'lims_db'
@@ -95,7 +95,7 @@ rootDb.connect((rootErr) => {
               
               // Now connect as lims_user
               const db = mysql.createConnection({
-                host: process.env.DB_HOST || 'localhost',
+                host: process.env.DB_HOST || '192.168.99.252',
                 user: 'lims_user',
                 password: process.env.DB_PASSWORD || 'root', // Consistent password
                 database: process.env.DB_NAME || 'lims_db'
