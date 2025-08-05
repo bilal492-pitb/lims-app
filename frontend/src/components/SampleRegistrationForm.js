@@ -1,6 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 import './SampleRegistrationForm.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faUser, faBuilding, faPhone, faEnvelope, faMapMarker, faBox, faClipboard, 
+  faFlask, faSave, faTimes, faVial, faFingerprint, faWeightHanging, faRuler, 
+  faComment, faTrash, faPlus, faUndo, faMoneyBillWave, faCode, faMoneyBill, 
+  faInfoCircle, faCog, faUserTie, faTruck
+} from '@fortawesome/free-solid-svg-icons';
 
 // Hardcoded data (from ERU 1.html)
 const panelCompanies = [
@@ -15,137 +23,316 @@ const panelCompanies = [
 ];
 
 const labData = {
+  // Food Lab
   food: {
-    name: 'Food',
-    sampleTypes: {
-      dairy: 'Dairy Products',
-      meat: 'Meat & Poultry',
-      beverages: 'Beverages',
-      bakery: 'Bakery Products',
-      oils: 'Edible Oils',
-    },
-    tests: {
-      dairy: [
-        { code: 'FAT', name: 'Fat Content', price: 2000 },
-        { code: 'SNF', name: 'SNF Content', price: 1500 },
-        { code: 'ADUL', name: 'Adulteration Test', price: 2500 },
-        { code: 'MICRO', name: 'Microbiological Analysis', price: 3000 },
+      name: 'Food',
+      subLabs: [
+          { id: 'fc', name: 'Food Chemistry' },
+          { id: 'fm', name: 'Food Microbiology' }
       ],
-      meat: [
-        { code: 'PROT', name: 'Protein Content', price: 2500 },
-        { code: 'FAT', name: 'Fat Content', price: 2000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1800 },
-        { code: 'MICRO', name: 'Microbiological Analysis', price: 3500 },
-      ],
-      beverages: [
-        { code: 'PROT', name: 'Protein Content', price: 2500 },
-        { code: 'FAT', name: 'Fat Content', price: 2000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1800 },
-        { code: 'MICRO', name: 'Microbiological Analysis', price: 3500 },
-      ],
-      bakery: [
-        { code: 'PROT', name: 'Protein Content', price: 2500 },
-        { code: 'FAT', name: 'Fat Content', price: 2000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1800 },
-        { code: 'MICRO', name: 'Microbiological Analysis', price: 3500 },
-      ],
-      oils: [
-        { code: 'PROT', name: 'Protein Content', price: 2500 },
-        { code: 'FAT', name: 'Fat Content', price: 2000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1800 },
-        { code: 'MICRO', name: 'Microbiological Analysis', price: 3500 },
-      ],
-    },
-  },
+      sampleCategories: {
+          'fats_oils': 'Fats and Oils',
+          'food_additives': 'Food Additives',
+          'antibiotic_residues': 'Antibiotic Residues & Hormones',
+          'aflatoxin': 'Aflatoxin',
+          'milk_products': 'Milk and Milk Products',
+          'bakery': 'Bakery and Bakery Wares',
+          'egg_products': 'Egg and Egg Products'
+      },
+      tests: {
+          fc: {
+              fats_oils: [
+                  { code: 'FC.001.001', name: 'Determination of moisture content Oils & Fats (Air Oven Method)', requirements: '100 g in airtight glass jar (1 liter over all)', fee: 2500 },
+                  { code: 'FC.001.002', name: 'Determination of free fatty acids (acid value) in crude and refined oil', requirements: '100 ml in sealed bottle (1 liter over all)', fee: 3000 },
+                  { code: 'FC.001.003', name: 'Determination of Saponification Value', requirements: '100 g in clean container (1 liter over all)', fee: 3500 }
+              ],
+              food_additives: [
+                  { code: 'FC.014.001', name: 'Detection of synthetic colours in food samples by TLC', requirements: '100-200 gm', fee: 4000 },
+                  { code: 'FC.014.002', name: 'Detection of synthetic colours in food samples by HPLC', requirements: '100-200 gm', fee: 5000 },
+                  { code: 'FC.014.003', name: 'Determination of saccharin in food samples', requirements: '100-200 gm', fee: 3500 }
+              ],
+              antibiotic_residues: [
+                  { code: 'FC.015.001', name: 'Determination of chloramphenicol – HPLC-MS/MS method', requirements: '100-200 gm', fee: 8000 },
+                  { code: 'FC.015.002', name: 'Determination of nitrofuran metabolites – HPLC-MS/MS method', requirements: '100-200 gm', fee: 8500 },
+                  { code: 'FC.015.003', name: 'Determination of tetracyclines – HPLC-UV/DAD / LC-MS/MS method', requirements: '100-200 gm', fee: 9000 }
+              ],
+              aflatoxin: [
+                  { code: 'FC.016.001', name: 'Determination of aflatoxins (for groundnuts and groundnut products, oilseeds and food grains) – CB method', requirements: '100-200 gm', fee: 7000 },
+                  { code: 'FC.016.002', name: 'Determination of aflatoxins - Romer Minicolumn method', requirements: '100-200 gm', fee: 6500 },
+                  { code: 'FC.016.003', name: 'Determination of aflatoxins in corn and peanut powder / butter - Liquid Chromatographic method', requirements: '100-200 gm', fee: 7500 }
+              ]
+          },
+          fm: {
+              milk_products: [
+                  { code: 'FM.002.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 },
+                  { code: 'FM.002.002', name: 'TPC of Yeast', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 },
+                  { code: 'FM.002.003', name: 'TPC of Mold', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 }
+              ],
+              bakery: [
+                  { code: 'FM.011.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 },
+                  { code: 'FM.011.002', name: 'TPC of Yeast', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 },
+                  { code: 'FM.011.003', name: 'TPC of Mold', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 }
+              ],
+              egg_products: [
+                  { code: 'FM.012.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '1 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 },
+                  { code: 'FM.012.002', name: 'TPC of Yeast', requirements: '2 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 },
+                  { code: 'FM.012.003', name: 'TPC of Mold', requirements: '3 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 }
+              ]
+          }
+      },
+  // Drug Lab
   drug: {
-    name: 'Drug',
-    sampleTypes: {
-      tablets: 'Tablets',
-      syrups: 'Syrups',
-      injections: 'Injections',
-      capsules: 'Capsules',
-      ointments: 'Ointments',
-    },
-    tests: {
-      tablets: [
-        { code: 'ASSAY', name: 'Assay Test', price: 5000 },
-        { code: 'DISS', name: 'Dissolution Test', price: 4500 },
-        { code: 'DISINT', name: 'Disintegration Test', price: 3000 },
-        { code: 'IMP', name: 'Impurities Test', price: 6000 },
+      name: 'Drug',
+      subLabs: [
+          { id: 'dc', name: 'Drug Chemistry' },
+          { id: 'dm', name: 'Drug Microbiology' }
       ],
-      syrups: [
-        { code: 'ASSAY', name: 'Assay Test', price: 5500 },
-        { code: 'PH', name: 'pH Test', price: 2000 },
-        { code: 'VISC', name: 'Viscosity Test', price: 3000 },
-        { code: 'PRES', name: 'Preservative Test', price: 4000 },
-      ],
-      injections: [
-        { code: 'ASSAY', name: 'Assay Test', price: 5500 },
-        { code: 'PH', name: 'pH Test', price: 2000 },
-        { code: 'VISC', name: 'Viscosity Test', price: 3000 },
-        { code: 'PRES', name: 'Preservative Test', price: 4000 },
-      ],
-      capsules: [
-        { code: 'ASSAY', name: 'Assay Test', price: 5500 },
-        { code: 'PH', name: 'pH Test', price: 2000 },
-        { code: 'VISC', name: 'Viscosity Test', price: 3000 },
-        { code: 'PRES', name: 'Preservative Test', price: 4000 },
-      ],
-      ointments: [
-        { code: 'ASSAY', name: 'Assay Test', price: 5500 },
-        { code: 'PH', name: 'pH Test', price: 2000 },
-        { code: 'VISC', name: 'Viscosity Test', price: 3000 },
-        { code: 'PRES', name: 'Preservative Test', price: 4000 },
-      ],
-    },
-  },
+      sampleCategories: {
+          'tablets': 'Tablets',
+          'capsules': 'Capsules',
+          'syrups': 'Syrups',
+          'suspensions': 'Suspensions',
+          'ointments': 'Ointments',
+          'cosmetics': 'Cosmetics',
+          'suspected_material': 'Suspected Material'
+      },
+      tests: {
+          dc: {
+              tablets: [
+                  { code: 'DC.001.001', name: 'Physical Description of Tablets', requirements: 'As per recommended guidelines/label claim', fee: 2000 },
+                  { code: 'DC.001.002', name: 'Weight Variation of Tablets', requirements: 'As per recommended guidelines/label claim', fee: 2500 },
+                  { code: 'DC.001.003', name: 'Tablet Friability', requirements: 'As per recommended guidelines/label claim', fee: 3000 }
+              ],
+              capsules: [
+                  { code: 'DC.002.001', name: 'Physical Description of Capsules', requirements: 'As per recommended guidelines/label claim', fee: 2200 },
+                  { code: 'DC.002.002', name: 'Weight Variation of Capsules', requirements: 'As per recommended guidelines/label claim', fee: 2700 },
+                  { code: 'DC.002.003', name: 'Capsule Disintegration', requirements: 'As per recommended guidelines/label claim', fee: 3200 }
+              ],
+              syrups: [
+                  { code: 'DC.005.001', name: 'Assay of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2800 },
+                  { code: 'DC.005.002', name: 'Identification of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2300 },
+                  { code: 'DC.005.003', name: 'pH of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2000 }
+              ],
+              suspensions: [
+                  { code: 'DC.006.001', name: 'Assay of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 3000 },
+                  { code: 'DC.006.002', name: 'Identification of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 2500 },
+                  { code: 'DC.006.003', name: 'pH of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 2200 }
+              ],
+              ointments: [
+                  { code: 'DC.007.001', name: 'Assay of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 3200 },
+                  { code: 'DC.007.002', name: 'Identification of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 2700 },
+                  { code: 'DC.007.003', name: 'pH of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 2400 }
+              ],
+              cosmetics: [
+                  { code: 'DC.030.001', name: 'Assay of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 3500 },
+                  { code: 'DC.030.002', name: 'Identification of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 3000 },
+                  { code: 'DC.030.003', name: 'pH of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 2500 }
+              ],
+              suspected_material: [
+                  { code: 'DC.030.025', name: 'Color Test Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 5000 },
+                  { code: 'DC.030.026', name: 'Pharmaceutical Identification Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 5500 },
+                  { code: 'DC.030.027', name: 'Thin Layer Chromatography Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 6000 }
+              ]
+          },
+          dm: {
+              tablets: [
+                  { code: 'DM.001.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 4500 },
+                  { code: 'DM.001.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 6000 },
+                  { code: 'DM.001.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 5500 }
+              ],
+              capsules: [
+                  { code: 'DM.002.004', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 4700 },
+                  { code: 'DM.002.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 6200 },
+                  { code: 'DM.002.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 5700 }
+              ],
+              syrups: [
+                  { code: 'DM.005.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5000 },
+                  { code: 'DM.005.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6500 },
+                  { code: 'DM.005.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6000 }
+              ],
+              suspensions: [
+                  { code: 'DM.006.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5200 },
+                  { code: 'DM.006.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6700 },
+                  { code: 'DM.006.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6200 }
+              ],
+              ointments: [
+                  { code: 'DM.007.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5500 },
+                  { code: 'DM.007.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 7000 },
+                  { code: 'DM.007.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6500 }
+              ],
+              cosmetics: [
+                  { code: 'DM.031.007', name: 'Microbial Enumeration', requirements: '05 units', fee: 4000 },
+                  { code: 'DM.031.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: '05 units', fee: 5500 },
+                  { code: 'DM.031.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: '05 units', fee: 5000 }
+              ],
+              suspected_material: [
+                  { code: 'DM.035.001', name: 'Microbial Identification', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 7000 },
+                  { code: 'DM.035.002', name: 'Fungal Identification', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 7500 },
+                  { code: 'DM.035.003', name: 'Antimicrobial Susceptibility Testing', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 8000 }
+              ]
+          }
+      }
+  }
+},
+  // Agricultural Lab
   agricultural: {
-    name: 'Agricultural',
-    sampleTypes: {
-      pesticides: 'Pesticides',
-      fertilizers: 'Fertilizers',
-      seeds: 'Seeds',
-      soil: 'Soil Samples',
-      water: 'Water Samples',
-    },
-    tests: {
-      pesticides: [
-        { code: 'RESID', name: 'Residue Analysis', price: 4000 },
-        { code: 'PURITY', name: 'Purity Test', price: 3500 },
-        { code: 'EFF', name: 'Efficacy Test', price: 5000 },
+      name: 'Agricultural',
+      subLabs: [
+          { id: 'ac', name: 'Agricultural Chemistry' },
+          { id: 'am', name: 'Agricultural Microbiology' }
       ],
-      fertilizers: [
-        { code: 'NPK', name: 'NPK Analysis', price: 3000 },
-        { code: 'HEAVY', name: 'Heavy Metals', price: 4000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1500 },
-      ],
-      seeds: [
-        { code: 'NPK', name: 'NPK Analysis', price: 3000 },
-        { code: 'HEAVY', name: 'Heavy Metals', price: 4000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1500 },
-      ],
-      soil: [
-        { code: 'NPK', name: 'NPK Analysis', price: 3000 },
-        { code: 'HEAVY', name: 'Heavy Metals', price: 4000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1500 },
-      ],
-      water: [
-        { code: 'NPK', name: 'NPK Analysis', price: 3000 },
-        { code: 'HEAVY', name: 'Heavy Metals', price: 4000 },
-        { code: 'MOIST', name: 'Moisture Content', price: 1500 },
-      ],
-    },
-  },
+      sampleCategories: {
+          'pesticides': 'Pesticides',
+          'fertilizers': 'Fertilizers',
+          'seeds': 'Seeds',
+          'soil': 'Soil Samples'
+      },
+      tests: {
+          ac: {
+              pesticides: [
+                  { code: 'AC.001.001', name: 'Determination of pesticide active ingredient by gas chromatography', requirements: '250 ml (liquid)/ 250g (solid)', fee: 5000 },
+                  { code: 'AC.001.002', name: 'Determination of pesticide active ingredient by HPLC', requirements: '250 ml (liquid)/ 250g (solid)', fee: 5500 },
+                  { code: 'AC.001.005', name: 'Determination of pH of pesticide', requirements: '250 ml (liquid)/ 250g (solid)', fee: 3000 }
+              ],
+              fertilizers: [
+                  { code: 'AC.002.001', name: 'Estimation of nitrogen in fertilizer by Kjeldahl method', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4500 },
+                  { code: 'AC.002.002', name: 'Estimation of phosphorus in fertilizer by Vanado Phospho Molybdate Method', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4500 },
+                  { code: 'AC.002.003', name: 'Estimation of potassium in fertilizer by flame photometer', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4000 }
+              ]
+          },
+          am: {
+              seeds: [
+                  { code: 'AM.007.001', name: 'Physical Purity Analysis', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 3500 },
+                  { code: 'AM.007.002', name: 'Germination Test', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 4000 },
+                  { code: 'AM.007.003', name: 'Seed Health Testing', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 4500 }
+              ],
+              soil: [
+                  { code: 'AM.002.001', name: 'Mango Anthracnose Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 },
+                  { code: 'AM.002.002', name: 'Mango Malformation Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 },
+                  { code: 'AM.002.003', name: 'Citrus canker Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 }
+              ]
+          }
+      }
+  }
 };
 
 const initialSenderDetails = { name: '', designation: '', department: '', province: '', division: '', district: '', streetNo: '', area: '', address: '', contactNumber: '', cnic: '', email: '' };
 const initialCompanyDetails = { companyName: '', companyContact: '', companyEmail: '', companyAddress: '' };
 const initialFocalPersonDetails = { name: '', contactNumber: '', designation: '', email: '' };
 const initialDeliveredVia = { method: 'self', name: '', cnic: '', contactNumber: '', streetNo: '', area: '', address: '', companyName: '', companyContact: '', companyAddress: '', parcelTrackingNumber: '', dispatchDate: '', remarks: '' };
-const initialPackagingDetails = { packagingType: '', sealCondition: '', packageType: '', labelDetails: '', labelImage: null, packagingNotes: '' };
-const initialSample = () => ({ lab: '', sampleType: '', manufacturerName: '', sampleCollectionDate: '', expiryDate: '', barcodeNumber: '', offenderDetails: '', additionalNote: '', selectedTests: [], testTable: [], totalAmount: 0 });
+const initialPackagingDetails = { packagingType: '', sealCondition: '', packageType: '', noofsamples: '', environmentalconditions: '', labelDetails: '', labelImage: null, opencameraImage: null, packagingNotes: '' };
+const initialSample = () => ({
+  // Basic Information
+  lab: '',
+  sampleType: '',
+  
+  // Seal Condition
+  sealCondition: '',
+  
+  // Memorandum Details
+  memorandumNumber: '',
+  memorandumDate: '',
+  
+  // Quantity
+  quantityType: 'pack',
+  quantityValue: '',
+  quantityUnit: '',
+  
+  // Product Details
+  brandName: '',
+  manufacturerName: '',
+  manufacturerAddress: '',
+  manufacturerCountry: '',
+  batchNumber: '',
+  mfgDate: '',
+  expDate: '',
+  
+  // Importer/Distributor
+  importerName: '',
+  importerAddress: '',
+  distributorName: '',
+  distributorAddress: '',
+  
+  // Registration
+  registrationNumber: '',
+  registrationDate: '',
+  
+  // Sample Information
+  sampleCollectionDate: '',
+  sampleCollectionLocation: '',
+  sampleCollectionBy: '',
+  sampleCollectionWitness: '',
+  sampleCollectionNote: '',
+  
+  // Physical Properties
+  physicalAppearance: '',
+  color: '',
+  odor: '',
+  
+  // Storage Conditions
+  storageCondition: 'ambient',
+  storageTemperature: '',
+  storageHumidity: '',
+  
+  // Barcode/QR
+  barcodeNumber: '',
+  qrCode: '',
+  
+  // Offender Details
+  offenderName: '',
+  offenderFatherName: '',
+  offenderCnic: '',
+  offenderContact: '',
+  offenderAddress: '',
+  
+  // Additional Information
+  specifications: '',
+  additionalNote: '',
+  
+  // Sub-Lab and Category
+  subLab: '',
+  sampleCategory: '',
+  
+  // Sample Acceptance
+  sampleAccepted: true,
+  rejectionReason: '',
+  
+  // Test Selection
+  selectedTests: [],
+  testTable: [],
+  totalAmount: 0,
+  
+  // Document References
+  documentReferences: [],
+  
+  // Status
+  status: 'draft',
+  createdBy: '',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString()
+});
 
 function SampleRegistrationForm() {
+  const [registrationNumber, setRegistrationNumber] = useState('');
+  const [testDefinitions, setTestDefinitions] = useState([]);
+  const [testCategories, setTestCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch test definitions and categories when component mounts
+    const fetchTestData = async () => {
+      try {
+        const [definitionsRes, categoriesRes] = await Promise.all([
+          axios.get(`${API_BASE_URL}/api/test-configuration/test-definitions`),
+          axios.get(`${API_BASE_URL}/api/test-configuration/test-categories`)
+        ]);
+        setTestDefinitions(definitionsRes.data);
+        setTestCategories(categoriesRes.data);
+      } catch (error) {
+        console.error('Error fetching test data:', error);
+      }
+    };
+    fetchTestData();
+  }, []);
   const [registrationType, setRegistrationType] = useState('individual');
   const [panelCompany, setPanelCompany] = useState('');
   const [senderDetails, setSenderDetails] = useState({ ...initialSenderDetails });
@@ -271,7 +458,6 @@ function SampleRegistrationForm() {
     try {
       // Prepare data
       const data = {
-        registrationNumber: 'PAFDA-25-000001',
         registrationType: registrationType === 'panel' ? 'Panel Company' : 'Self / Individual',
         panelCompany: panelCompany,
         senderDetails: registrationType === 'panel' ? {} : senderDetails,
@@ -282,7 +468,7 @@ function SampleRegistrationForm() {
         samples: samples.map((s) => ({ ...s, testTable: undefined })),
         grandTotal,
       };
-      await axios.post('http://localhost:5000/api/registrations', data);
+      await axios.post(`${API_BASE_URL}/sample-registrations`, data);
       alert('Registration submitted successfully!');
       // Reset form
       setRegistrationType('individual');
@@ -306,22 +492,35 @@ function SampleRegistrationForm() {
   // Render
   return (
     <div className="form-container">
-      <h2>Sample Registration Form</h2>
+      <div className="page-title">
+        <FontAwesomeIcon icon={faClipboard} />
+        <span>Sample Registration Form</span>
+        {registrationNumber && (
+          <div className="registration-number">
+            Registration #: {registrationNumber}
+          </div>
+        )}
+      </div>
       <form onSubmit={handleSubmit}>
         {/* Registration Type */}
         <div className="form-section">
-          <h3>Registration Type</h3>
+          <div className="form-section-title">
+            <FontAwesomeIcon icon={faBuilding} />
+            <span>Registration Type</span>
+          </div>
           <div>
-            <label>
-              <input type="radio" name="registrationType" value="individual" checked={registrationType === 'individual'} onChange={handleRegistrationTypeChange} /> Self / Individual
+            <label className="radio-label">
+              <input type="radio" name="registrationType" value="individual" checked={registrationType === 'individual'} onChange={handleRegistrationTypeChange} />
+              <FontAwesomeIcon icon={faUser} /> Self / Individual
             </label>
-            <label style={{ marginLeft: 20 }}>
-              <input type="radio" name="registrationType" value="panel" checked={registrationType === 'panel'} onChange={handleRegistrationTypeChange} /> Panel Company
+            <label className="radio-label" style={{ marginLeft: 20 }}>
+              <input type="radio" name="registrationType" value="panel" checked={registrationType === 'panel'} onChange={handleRegistrationTypeChange} />
+              <FontAwesomeIcon icon={faBuilding} /> Panel Company
             </label>
           </div>
           {registrationType === 'panel' && (
-            <div style={{ marginTop: 10 }}>
-              <select value={panelCompany} onChange={handlePanelCompanyChange} required>
+            <div className="panel-company-select">
+              <select value={panelCompany} onChange={handlePanelCompanyChange} required className="form-control">
                 <option value="">-- Select Panel Company --</option>
                 {panelCompanies.map((c) => (
                   <option key={c.value} value={c.value}>{c.label}</option>
@@ -334,106 +533,170 @@ function SampleRegistrationForm() {
         {/* Sender/Company Details */}
         {registrationType === 'individual' ? (
           <div className="form-section">
-            <h3>Sender Details</h3>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Name *</label>
-                <input type="text" value={senderDetails.name} onChange={e => setSenderDetails({ ...senderDetails, name: e.target.value })} required />
-              </div>
-              <div className="form-group">
-                <label>Designation *</label>
-                <input type="text" value={senderDetails.designation} onChange={e => setSenderDetails({ ...senderDetails, designation: e.target.value })} required />
-              </div>
+            <div className="form-section-title">
+              <FontAwesomeIcon icon={faUser} />
+              <span>Sender Details</span>
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Department *</label>
-                <input type="text" value={senderDetails.department} onChange={e => setSenderDetails({ ...senderDetails, department: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faUser} />
+                  <span>Name *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.name} onChange={e => setSenderDetails({ ...senderDetails, name: e.target.value })} placeholder="Enter full name" required />
               </div>
               <div className="form-group">
-                <label>Province *</label>
-                <input type="text" value={senderDetails.province} onChange={e => setSenderDetails({ ...senderDetails, province: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  <span>Designation *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.designation} onChange={e => setSenderDetails({ ...senderDetails, designation: e.target.value })} placeholder="Enter designation" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  <span>Department *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.department} onChange={e => setSenderDetails({ ...senderDetails, department: e.target.value })} placeholder="Enter department" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Province *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.province} onChange={e => setSenderDetails({ ...senderDetails, province: e.target.value })} placeholder="Enter province" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Division *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.division} onChange={e => setSenderDetails({ ...senderDetails, division: e.target.value })} placeholder="Enter division" required />
               </div>
             </div>
-            <div className="form-row">
+              <div className="form-row">
               <div className="form-group">
-                <label>Division *</label>
-                <input type="text" value={senderDetails.division} onChange={e => setSenderDetails({ ...senderDetails, division: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>District *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.district} onChange={e => setSenderDetails({ ...senderDetails, district: e.target.value })} placeholder="Enter district" required />
               </div>
               <div className="form-group">
-                <label>District *</label>
-                <input type="text" value={senderDetails.district} onChange={e => setSenderDetails({ ...senderDetails, district: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Street No *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.streetNo} onChange={e => setSenderDetails({ ...senderDetails, streetNo: e.target.value })} placeholder="Enter street number" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Area *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.area} onChange={e => setSenderDetails({ ...senderDetails, area: e.target.value })} placeholder="Enter area" required />
+              </div>
+              <div className="form-group full-width">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Address *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.address} onChange={e => setSenderDetails({ ...senderDetails, address: e.target.value })} placeholder="Enter complete address" required />
               </div>
             </div>
-            <div className="form-group">
-              <label>Street No *</label>
-              <input type="text" value={senderDetails.streetNo} onChange={e => setSenderDetails({ ...senderDetails, streetNo: e.target.value })} required />
-            </div>
-            <div className="form-group">
-              <label>Area *</label>
-              <input type="text" value={senderDetails.area} onChange={e => setSenderDetails({ ...senderDetails, area: e.target.value })} required />
-            </div>
-            <div className="form-row">
+              <div className="form-row">
               <div className="form-group">
-                <label>Address *</label>
-                <input type="text" value={senderDetails.address} onChange={e => setSenderDetails({ ...senderDetails, address: e.target.value })} required />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Contact Number *</label>
-                <input type="tel" value={senderDetails.contactNumber} onChange={e => setSenderDetails({ ...senderDetails, contactNumber: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>Contact Number *</span>
+                </label>
+                <input type="tel" className="form-control" value={senderDetails.contactNumber} onChange={e => setSenderDetails({ ...senderDetails, contactNumber: e.target.value })} placeholder="Enter contact number" required />
               </div>
               <div className="form-group">
-                <label>CNIC *</label>
-                <input type="text" value={senderDetails.cnic} onChange={e => setSenderDetails({ ...senderDetails, cnic: e.target.value })} required />
+                <label>
+                  <FontAwesomeIcon icon={faUser} />
+                  <span>CNIC *</span>
+                </label>
+                <input type="text" className="form-control" value={senderDetails.cnic} onChange={e => setSenderDetails({ ...senderDetails, cnic: e.target.value })} placeholder="Enter CNIC number" required />
               </div>
               <div className="form-group">
-                <label>Email ID</label>
-                <input type="email" value={senderDetails.email} onChange={e => setSenderDetails({ ...senderDetails, email: e.target.value })} />
+                <label>
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  <span>Email ID</span>
+                </label>
+                <input type="email" className="form-control" value={senderDetails.email} onChange={e => setSenderDetails({ ...senderDetails, email: e.target.value })} placeholder="Enter email address" />
               </div>
             </div>
           </div>
         ) : (
           <div className="form-section">
-            <h3>Company Details</h3>
-            <div className="form-row">
+            <div className="form-section-title">
+              <FontAwesomeIcon icon={faBuilding} />
+              <span>Company Details</span>
+            </div>
+            <div className="form-grid">
               <div className="form-group">
-                <label>Company Name</label>
-                <input type="text" value={companyDetails.companyName} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  <span>Company Name</span>
+                </label>
+                <input type="text" className="form-control" value={companyDetails.companyName} readOnly />
               </div>
               <div className="form-group">
-                <label>Company Contact</label>
-                <input type="text" value={companyDetails.companyContact} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>Company Contact</span>
+                </label>
+                <input type="text" className="form-control" value={companyDetails.companyContact} readOnly />
               </div>
               <div className="form-group">
-                <label>Company Email</label>
-                <input type="email" value={companyDetails.companyEmail} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  <span>Company Email</span>
+                </label>
+                <input type="email" className="form-control" value={companyDetails.companyEmail} readOnly />
+              </div>
+              <div className="form-group full-width">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Company Address</span>
+                </label>
+                <textarea className="form-control" value={companyDetails.companyAddress} rows={2} readOnly />
               </div>
             </div>
-            <div className="form-row">
-              <div className="form-group" style={{ width: '100%' }}>
-                <label>Company Address</label>
-                <textarea value={companyDetails.companyAddress} rows={2} readOnly />
-              </div>
+              
+            <div className="form-section-title" style={{ marginTop: '20px' }}>
+              <FontAwesomeIcon icon={faUser} />
+              <span>Focal Person Details</span>
             </div>
-            <h4>Focal Person Details</h4>
-            <div className="form-row">
+            <div className="form-grid">
               <div className="form-group">
-                <label>Focal Person Name</label>
-                <input type="text" value={focalPersonDetails.name} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faUser} />
+                  <span>Focal Person Name</span>
+                </label>
+                <input type="text" className="form-control" value={focalPersonDetails.name} readOnly />
               </div>
               <div className="form-group">
-                <label>Contact Number</label>
-                <input type="text" value={focalPersonDetails.contactNumber} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>Contact Number</span>
+                </label>
+                <input type="text" className="form-control" value={focalPersonDetails.contactNumber} readOnly />
               </div>
               <div className="form-group">
-                <label>Designation</label>
-                <input type="text" value={focalPersonDetails.designation} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  <span>Designation</span>
+                </label>
+                <input type="text" className="form-control" value={focalPersonDetails.designation} readOnly />
               </div>
               <div className="form-group">
-                <label>Email</label>
-                <input type="email" value={focalPersonDetails.email} readOnly />
+                <label>
+                  <FontAwesomeIcon icon={faEnvelope} />
+                  <span>Email</span>
+                </label>
+                <input type="email" className="form-control" value={focalPersonDetails.email} readOnly />
               </div>
             </div>
           </div>
@@ -441,96 +704,136 @@ function SampleRegistrationForm() {
 
         {/* Delivery Method */}
         <div className="form-section">
-          <h3>Delivered Via</h3>
-          <div className="form-row">
-            <div className="form-group">
-              <label>
-                <input type="checkbox" checked={deliveredVia.method === 'self'} onChange={() => handleDeliveryMethodChange('self')} /> Self
-              </label>
-              <label style={{ marginLeft: 20 }}>
-                <input type="checkbox" checked={deliveredVia.method === 'authorized'} onChange={() => handleDeliveryMethodChange('authorized')} /> Authorized Person
-              </label>
-              <label style={{ marginLeft: 20 }}>
-                <input type="checkbox" checked={deliveredVia.method === 'courier'} onChange={() => handleDeliveryMethodChange('courier')} /> Courier Service
-              </label>
+          <div className="form-section-title">
+            <FontAwesomeIcon icon={faTruck} />
+            <span>Delivered Via</span>
+          </div>
+          <div className="form-grid">
+            <div className="form-group full-width">
+              <div className="delivery-options">
+                <label className="radio-label">
+                  <input type="radio" name="deliveryMethod" checked={deliveredVia.method === 'self'} onChange={() => handleDeliveryMethodChange('self')} />
+                  <FontAwesomeIcon icon={faUser} /> Self
+                </label>
+                <label className="radio-label">
+                  <input type="radio" name="deliveryMethod" checked={deliveredVia.method === 'authorized'} onChange={() => handleDeliveryMethodChange('authorized')} />
+                  <FontAwesomeIcon icon={faUserTie} /> Authorized Person
+                </label>
+                <label className="radio-label">
+                  <input type="radio" name="deliveryMethod" checked={deliveredVia.method === 'courier'} onChange={() => handleDeliveryMethodChange('courier')} />
+                  <FontAwesomeIcon icon={faTruck} /> Courier Service
+                </label>
+              </div>
             </div>
           </div>
           {/* Authorized Person Fields */}
           {showAuthorizedFields && (
-            <>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Name *</label>
-                  <input type="text" value={deliveredVia.name} onChange={e => setDeliveredVia({ ...deliveredVia, name: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>CNIC *</label>
-                  <input type="text" value={deliveredVia.cnic} onChange={e => setDeliveredVia({ ...deliveredVia, cnic: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Contact Number *</label>
-                  <input type="tel" value={deliveredVia.contactNumber} onChange={e => setDeliveredVia({ ...deliveredVia, contactNumber: e.target.value })} required />
-                </div>
+            <div className="form-grid" style={{ marginTop: '20px' }}>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faUser} />
+                  <span>Name *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.name} onChange={e => setDeliveredVia({ ...deliveredVia, name: e.target.value })} placeholder="Enter authorized person name" required />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Street No *</label>
-                  <input type="text" value={deliveredVia.streetNo} onChange={e => setDeliveredVia({ ...deliveredVia, streetNo: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Area *</label>
-                  <input type="text" value={deliveredVia.area} onChange={e => setDeliveredVia({ ...deliveredVia, area: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Address *</label>
-                  <input type="text" value={deliveredVia.address} onChange={e => setDeliveredVia({ ...deliveredVia, address: e.target.value })} required />
-                </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faIdCard} />
+                  <span>CNIC *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.cnic} onChange={e => setDeliveredVia({ ...deliveredVia, cnic: e.target.value })} placeholder="Enter CNIC number" required />
               </div>
-            </>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>Contact Number *</span>
+                </label>
+                <input type="tel" className="form-control" value={deliveredVia.contactNumber} onChange={e => setDeliveredVia({ ...deliveredVia, contactNumber: e.target.value })} placeholder="Enter contact number" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Street No *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.streetNo} onChange={e => setDeliveredVia({ ...deliveredVia, streetNo: e.target.value })} placeholder="Enter street number" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Area *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.area} onChange={e => setDeliveredVia({ ...deliveredVia, area: e.target.value })} placeholder="Enter area" required />
+              </div>
+              <div className="form-group full-width">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Address *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.address} onChange={e => setDeliveredVia({ ...deliveredVia, address: e.target.value })} placeholder="Enter complete address" required />
+              </div>
+            </div>
           )}
           {/* Courier Fields */}
           {showCourierFields && (
-            <>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Company Name *</label>
-                  <input type="text" value={deliveredVia.companyName} onChange={e => setDeliveredVia({ ...deliveredVia, companyName: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Contact *</label>
-                  <input type="tel" value={deliveredVia.companyContact} onChange={e => setDeliveredVia({ ...deliveredVia, companyContact: e.target.value })} required />
-                </div>
+            <div className="form-grid" style={{ marginTop: '20px' }}>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faBuilding} />
+                  <span>Company Name *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.companyName} onChange={e => setDeliveredVia({ ...deliveredVia, companyName: e.target.value })} placeholder="Enter courier company name" required />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Address *</label>
-                  <textarea value={deliveredVia.companyAddress} onChange={e => setDeliveredVia({ ...deliveredVia, companyAddress: e.target.value })} rows={3} required />
-                </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faPhone} />
+                  <span>Contact *</span>
+                </label>
+                <input type="tel" className="form-control" value={deliveredVia.companyContact} onChange={e => setDeliveredVia({ ...deliveredVia, companyContact: e.target.value })} placeholder="Enter company contact" required />
               </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Parcel Tracking Number *</label>
-                  <input type="text" value={deliveredVia.parcelTrackingNumber} onChange={e => setDeliveredVia({ ...deliveredVia, parcelTrackingNumber: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Dispatch Date *</label>
-                  <input type="date" value={deliveredVia.dispatchDate} onChange={e => setDeliveredVia({ ...deliveredVia, dispatchDate: e.target.value })} required />
-                </div>
-                <div className="form-group">
-                  <label>Remarks/Notes</label>
-                  <textarea value={deliveredVia.remarks} onChange={e => setDeliveredVia({ ...deliveredVia, remarks: e.target.value })} rows={3} />
-                </div>
+              <div className="form-group full-width">
+                <label>
+                  <FontAwesomeIcon icon={faMapMarker} />
+                  <span>Address *</span>
+                </label>
+                <textarea className="form-control" value={deliveredVia.companyAddress} onChange={e => setDeliveredVia({ ...deliveredVia, companyAddress: e.target.value })} rows={3} placeholder="Enter company address" required />
               </div>
-            </>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faBarcode} />
+                  <span>Tracking Number *</span>
+                </label>
+                <input type="text" className="form-control" value={deliveredVia.parcelTrackingNumber} onChange={e => setDeliveredVia({ ...deliveredVia, parcelTrackingNumber: e.target.value })} placeholder="Enter tracking number" required />
+              </div>
+              <div className="form-group">
+                <label>
+                  <FontAwesomeIcon icon={faCalendar} />
+                  <span>Dispatch Date *</span>
+                </label>
+                <input type="date" className="form-control" value={deliveredVia.dispatchDate} onChange={e => setDeliveredVia({ ...deliveredVia, dispatchDate: e.target.value })} required />
+              </div>
+              <div className="form-group full-width">
+                <label>
+                  <FontAwesomeIcon icon={faComment} />
+                  <span>Remarks/Notes</span>
+                </label>
+                <textarea className="form-control" value={deliveredVia.remarks} onChange={e => setDeliveredVia({ ...deliveredVia, remarks: e.target.value })} rows={3} placeholder="Enter any additional notes" />
+              </div>
+            </div>
           )}
         </div>
 
         {/* Packaging Details */}
         <div className="form-section">
-          <h3>Packaging Details</h3>
+          <div className="form-section-title">
+            <FontAwesomeIcon icon={faBox} />
+            <span>Packaging Details</span>
+          </div>
           <div className="form-row">
             <div className="form-group">
-              <label>Packaging Type *</label>
+              <label>
+                <FontAwesomeIcon icon={faBox} />
+                <span>Packaging Type *</span>
+              </label>
               <select value={packagingDetails.packagingType} onChange={e => setPackagingDetails({ ...packagingDetails, packagingType: e.target.value })} required>
                 <option value="">-- Select Packaging Type --</option>
                 <option value="wooden">Wooden</option>
@@ -570,6 +873,22 @@ function SampleRegistrationForm() {
               </div>
             </div>
           </div>
+          <div className="form-row"></div>
+          <div className="form-group"></div>
+                <label>No of Samples</label>
+                <input type="number" value={packagingDetails.nosamples} onChange={e => setPackagingDetails({ ...packagingDetails, nosamples: e.target.value })} style={{ flex: 1 }} placeholder="Enter no of samples" />
+              </div>
+          <div className="form-group">
+              <label>Environmental Conditions *</label>
+              <select value={packagingDetails.environmentalconditions} onChange={e => setPackagingDetails({ ...packagingDetails, environmentalconditions: e.target.value })} required>
+                <option value="">-- Select Environmental Condition --</option>
+                <option value="ambiant">Ambiant</option>
+                <option value="frozen">Frozen</option>
+                <option value="protectedfromlight">Protected from light</option>
+                <option value="hotserved">Hotserved</option>
+                <option value="refrigerated">refrigerated</option>
+                <option value="others">Others</option>
+                </select>
           <div className="form-row">
             <div className="form-group" style={{ width: '100%' }}>
               <label>Label Details</label>
@@ -577,6 +896,10 @@ function SampleRegistrationForm() {
                 <input type="text" value={packagingDetails.labelDetails} onChange={e => setPackagingDetails({ ...packagingDetails, labelDetails: e.target.value })} style={{ flex: 1 }} placeholder="Enter label information" />
                 <label className="btn btn-secondary" style={{ margin: 0, whiteSpace: 'nowrap' }}>
                   Attach Image
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLabelImageChange} />
+                </label>
+                <label className="btn btn-secondary" style={{ margin: 0, whiteSpace: 'nowrap' }}>
+                  Open Camera
                   <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleLabelImageChange} />
                 </label>
               </div>
@@ -596,12 +919,15 @@ function SampleRegistrationForm() {
           </div>
         </div>
 
-        {/* Samples Section */}
+          {/* Samples Section */}
         <div className="form-section">
           <div className="form-row" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3 className="form-section-title" style={{ marginBottom: 0 }}>Samples Management</h3>
+            <div className="form-section-title" style={{ marginBottom: 0 }}>
+              <FontAwesomeIcon icon={faVial} />
+              <span>Samples Management</span>
+            </div>
             <button type="button" className="btn btn-primary" onClick={addSample}>
-              Add Sample
+              <FontAwesomeIcon icon={faPlus} /> Add Sample
             </button>
           </div>
           <div id="samplesContainer">
@@ -629,13 +955,17 @@ function SampleRegistrationForm() {
                       </select>
                     </div>
                     <div className="form-group">
-                      <label>Sample Type *</label>
-                      <select value={sample.sampleType} onChange={e => updateSample(idx, 'sampleType', e.target.value)} required disabled={!sample.lab}>
-                        <option value="">-- Select Sample Type --</option>
-                        {sample.lab && Object.entries(labData[sample.lab].sampleTypes).map(([key, label]) => (
-                          <option key={key} value={key}>{label}</option>
-                        ))}
-                      </select>
+                      <label>Seal Condition *</label>
+              <select value={packagingDetails.sealCondition} onChange={e => setPackagingDetails({ ...packagingDetails, sealCondition: e.target.value })} required>
+                <option value="">-- Select Seal Condition --</option>
+                <option value="intact">Intact/Sealed</option>
+                <option value="broken">Broken/Unsealed</option>
+                <option value="tampered">Tampered</option>
+                <option value="leaking">Leaking</option>
+                <option value="damaged">Damaged</option>
+                <option value="partially_sealed">Partially Sealed</option>
+                <option value="resealed">Resealed</option>
+              </select>
                     </div>
                   </div>
                   <div className="form-row">
@@ -661,6 +991,82 @@ function SampleRegistrationForm() {
                     </div>
                   </div>
                   <div className="form-row">
+                    <div className="form-group">
+                      <label>memorandumNumber</label>
+                      <input type="text" value={sample.sampleDescription} onChange={e => updateSample(idx, 'sampleDescription', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>memorandumDate</label>
+                      <input type="date" value={sample.memorandumDate} onChange={e => updateSample(idx, 'memorandumDate', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>quantity Type</label>
+                      <input type="text" value={sample.quantityType} onChange={e => updateSample(idx, 'quantityType', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>quantityValue</label>
+                      <input type="text" value={sample.quantityValue} onChange={e => updateSample(idx, 'quantityValue', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>quantityUnit</label>
+                      <input type="text" value={sample.quantityUnit} onChange={e => updateSample(idx, 'quantityunit', e.target.value)} />
+                    </div>
+                    </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>brandName</label>
+                      <input type="text" value={sample.brandName} onChange={e => updateSample(idx, 'brandName', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>manufacturerName</label>
+                      <input type="text" value={sample.manufacturerName} onChange={e => updateSample(idx, 'manufacturerName', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>manufacturerAddress</label>
+                      <input type="text" value={sample.manufacturerAddress} onChange={e => updateSample(idx, 'manufactureraddress', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>manufacturerCountry</label>
+                      <input type="text" value={sample.manufacturerCountry} onChange={e => updateSample(idx, 'manufacturercountry', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>Batch Number</label>
+                      <input type="text" value={sample.barcodeNumber} onChange={e => updateSample(idx, 'batchNumber', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>Manufacturer Date</label>
+                      <input type="date" value={sample.manufacturerDate} onChange={e => updateSample(idx, 'manufacturerDate', e.target.value)} />
+                    </div>
+                    <div className="form-group">
+                      <label>Expiry Date</label>
+                      <input type="date" value={sample.expiryDate} onChange={e => updateSample(idx, 'expiryDate', e.target.value)} />
+                    </div>
+                    </div>
+                    <div className="form-row">
+                    <div className="form-group" style={{ width: '100%' }}>
+                      <label>Additional Note</label>
+                      <textarea value={sample.additionalNote} onChange={e => updateSample(idx, 'additionalNote', e.target.value)} rows={2} />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ width: '100%' }}>
+                      <label>Additional Note</label>
+                      <textarea value={sample.additionalNote} onChange={e => updateSample(idx, 'additionalNote', e.target.value)} rows={2} />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ width: '100%' }}>
+                      <label>Additional Note</label>
+                      <textarea value={sample.additionalNote} onChange={e => updateSample(idx, 'additionalNote', e.target.value)} rows={2} />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group" style={{ width: '100%' }}>
+                      <label>Additional Note</label>
+                      <textarea value={sample.additionalNote} onChange={e => updateSample(idx, 'additionalNote', e.target.value)} rows={2} />
+                    </div>
+                  </div>
+                  <div className="form-row">
                     <div className="form-group" style={{ width: '100%' }}>
                       <label>Additional Note</label>
                       <textarea value={sample.additionalNote} onChange={e => updateSample(idx, 'additionalNote', e.target.value)} rows={2} />
@@ -677,30 +1083,30 @@ function SampleRegistrationForm() {
                       <small className="form-text text-muted">Hold Ctrl (Windows) or Cmd (Mac) to select multiple tests</small>
                     </div>
                   </div>
-                  <div className="test-table-container">
+                  <div className="test-table-container table-responsive">
                     <table className="test-fee-table">
                       <thead>
                         <tr>
-                          <th>Test Code</th>
-                          <th>Test Name</th>
-                          <th>Fee (Rs.)</th>
+                          <th><FontAwesomeIcon icon={faCode} /> Test Code</th>
+                          <th><FontAwesomeIcon icon={faFlask} /> Test Name</th>
+                          <th><FontAwesomeIcon icon={faMoneyBill} /> Fee (Rs.)</th>
                         </tr>
                       </thead>
                       <tbody>
                         {sample.testTable.length === 0 ? (
-                          <tr><td colSpan={3} className="text-center">No tests selected</td></tr>
+                          <tr><td colSpan={3} className="text-center text-muted"><FontAwesomeIcon icon={faInfoCircle} /> No tests selected</td></tr>
                         ) : (
                           <>
                             {sample.testTable.map((test) => (
                               <tr key={test.code}>
-                                <td>{test.code}</td>
+                                <td><code>{test.code}</code></td>
                                 <td>{test.name}</td>
-                                <td>{test.price.toLocaleString()}</td>
+                                <td className="text-right">{test.price.toLocaleString()}</td>
                               </tr>
                             ))}
-                            <tr className="font-weight-bold">
+                            <tr className="font-weight-bold bg-light">
                               <td colSpan={2} className="text-right">Subtotal:</td>
-                              <td>{sample.totalAmount.toLocaleString()}</td>
+                              <td className="text-right">{sample.totalAmount.toLocaleString()}</td>
                             </tr>
                           </>
                         )}
@@ -722,33 +1128,33 @@ function SampleRegistrationForm() {
 
         {/* Submit */}
         <div className="form-actions">
-        <button
-  type="button"
-  className="btn btn-secondary"
-  onClick={async () => {
-    const draftData = {
-      registrationType: registrationType === 'panel' ? 'Panel Company' : 'Self / Individual',
-      panelCompany: panelCompany,
-      senderDetails: registrationType === 'panel' ? {} : senderDetails,
-      companyDetails: registrationType === 'panel' ? companyDetails : {},
-      focalPersonDetails: registrationType === 'panel' ? focalPersonDetails : {},
-      deliveredVia,
-      packagingDetails: { ...packagingDetails, labelImage: undefined },
-      samples: samples.map((s) => ({ ...s, testTable: undefined })),
-      grandTotal,
-    };
-    await axios.post('http://localhost:5000/api/registrations/drafts', {
-      registrationNumber: 'PAFDA-25-000001',
-      draftData,
-    });
-    alert('Draft saved successfully!');
-  }}
-  disabled={submitting}
->
-  Save as Draft
-</button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={async () => {
+              const draftData = {
+                registrationType: registrationType === 'panel' ? 'Panel Company' : 'Self / Individual',
+                panelCompany: panelCompany,
+                senderDetails: registrationType === 'panel' ? {} : senderDetails,
+                companyDetails: registrationType === 'panel' ? companyDetails : {},
+                focalPersonDetails: registrationType === 'panel' ? focalPersonDetails : {},
+                deliveredVia,
+                packagingDetails: { ...packagingDetails, labelImage: undefined },
+                samples: samples.map((s) => ({ ...s, testTable: undefined })),
+                grandTotal,
+              };
+              await axios.post(`${API_BASE_URL}/registrations/drafts`, {
+                registrationNumber: 'PAFDA-25-000001',
+                draftData,
+              });
+              alert('Draft saved successfully!');
+            }}
+            disabled={submitting}
+          >
+            <FontAwesomeIcon icon={faSave} /> Save as Draft
+          </button>
           <button type="submit" className="btn btn-primary" disabled={submitting}>
-            {submitting ? 'Submitting...' : 'Submit Registration'}
+            <FontAwesomeIcon icon={faSave} /> {submitting ? 'Submitting...' : 'Submit Registration'}
           </button>
         </div>
       </form>

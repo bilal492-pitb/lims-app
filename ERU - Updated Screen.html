@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIMS - New Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #009688;
+            color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-section i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 20px;
+            max-width: 500px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .new-button {
+            background-color: white;
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .new-button i {
+            margin-right: 8px;
+        }
+
+        .notification-icon {
+            position: relative;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff5722;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .user-avatar i {
+            color: #009688;
+            font-size: 20px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .user-role {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: white;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #555;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .nav-item.active {
+            background-color: #e0f2f1;
+            color: #009688;
+            border-left: 4px solid #009688;
+            padding-left: 21px;
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sub-nav-item {
+            padding-left: 57px;
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-title {
+            font-size: 18px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .registration-number {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .registration-number span {
+            font-weight: bold;
+            color: #009688;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-row {
+            display: flex;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: #009688;
+            outline: none;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .form-check-input {
+            margin-right: 10px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .radio-option input {
+            margin-right: 5px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #009688;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #00796b;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+
+        .btn-success {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+        }
+
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #f57c00;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        /* Test Search and Selection Styles */
+        .test-search-container {
+            margin-top: 10px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .test-table-scroll {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .test-selection-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .test-selection-table th,
+        .test-selection-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-selection-table th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .test-selection-table tr:hover {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+
+        .selected-test-badge {
+            display: inline-block;
+            background-color: #e3f2fd;
+            padding: 5px 10px;
+            margin: 3px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .remove-test {
+            background: none;
+            border: none;
+            color: #f44336;
+            cursor: pointer;
+            margin-left: 5px;
+            padding: 2px 5px;
+        }
+
+        .remove-test:hover {
+            background-color: #ffebee;
+            border-radius: 50%;
+        }
+
+        .test-table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .test-fee-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .test-fee-table th, .test-fee-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-fee-table th {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .total-amount {
+            font-weight: bold;
+            text-align: right;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        /* Sample Section Styles */
+        .sample-container {
+            border: 1px solid #eee;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .sample-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .sample-title {
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .sample-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sample-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .add-sample-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #e0f2f1;
+            border: 1px dashed #009688;
+            border-radius: 4px;
+            color: #009688;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .add-sample-btn:hover {
+            background-color: #b2dfdb;
+        }
+
+        .add-sample-btn i {
+            margin-right: 8px;
+        }
+
+        .grand-total {
+            font-weight: bold;
+            text-align: right;
+            padding: 15px;
+            background-color: #e0f2f1;
+            border-radius: 4px;
+            margin-top: 20px;
+            color: #00796b;
+            font-size: 16px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .search-bar {
+                display: none;
+            }
+            
+            .form-group {
+                flex: 100%;
+                margin-right: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .form-actions .btn {
+                width: 100%;
+                margin-left: 0;
+                margin-bottom: 10px;
+            }
+        }
+
+        /* Add this CSS to hide sample content by default */
+        .sample-container .sample-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .sample-container.expanded .sample-content {
+            display: block;
+        }
+        .sample-header {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sample-title {
+            font-weight: bold;
+            margin: 0;
+        }
+        .sample-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <i class="fas fa-flask"></i>
+            <span class="logo-text">LIMS</span>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+        </div>
+        
+        <div class="new-button">
+            <i class="fas fa-plus"></i>
+            <span>New</span>
+        </div>
+        
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+        </div>
+        
+        <div class="user-profile">
+            <div class="user-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <div class="user-name">ERU</div>
+                <div class="user-role">Reception</div>
+            </div>
+        </div>
+    </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1 class="page-title">New Registration</h1>
+            
+            <!-- Registration Form -->
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 class="form-title">Sample Registration Form</h2>
+                    <div class="registration-number">
+                        Registration Number: <span>PAFDA-25-000001</span>
+                    </div>
+                </div>
+                
+                <form id="registrationForm">
+                    <!-- Registration Type Selection -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Registration Type</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Registration Type *</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="registrationType" value="individual" checked> Self / Individual
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="registrationType" value="panel"> Panel Company
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel Company Selection (initially hidden) -->
+                        <div class="form-row" id="panelCompanyRow" style="display: none;">
+                            <div class="form-group" style="width: 100%;">
+                                <label class="form-label" for="panelCompanySelect">Select Panel Company *</label>
+                                <select class="form-control" id="panelCompanySelect" onchange="populatePanelCompanyDetails()">
+                                    <option value="">-- Select Panel Company --</option>
+                                    <option value="nestle">Nestle Pakistan Limited</option>
+                                    <option value="unilever">Unilever Pakistan Limited</option>
+                                    <option value="engro">Engro Foods Limited</option>
+                                    <option value="shan">Shan Foods Private Limited</option>
+                                    <option value="national">National Foods Limited</option>
+                                    <option value="cocacola">Coca-Cola Beverages Pakistan Limited</option>
+                                    <option value="pepsi">PepsiCo International Pakistan</option>
+                                    <option value="shezan">Shezan International Limited</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sender Details (shown by default for Self/Individual) -->
+                    <div class="form-section" id="senderDetailsSection">
+                        <h3 class="form-section-title">Sender Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="senderName">Name *</label>
+                                <input type="text" class="form-control" id="senderName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="designation">Designation *</label>
+                                <input type="text" class="form-control" id="designation" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="department">Department *</label>
+                                <input type="text" class="form-control" id="department" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="province">Province *</label>
+                                <input type="text" class="form-control" id="province" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="division">Division *</label>
+                                <input type="text" class="form-control" id="division" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="district">District *</label>
+                                <input type="text" class="form-control" id="district" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="streetNo">Street No *</label>
+                            <input type="text" class="form-control" id="streetNo" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="area">Area *</label>
+                            <input type="text" class="form-control" id="area" required>
+                        </div>
+                            <div class="form-group">
+                                <label class="form-label" for="address">Address *</label>
+                                <input type="text" class="form-control" id="address" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="contactNumber">Contact Number *</label>
+                                <input type="tel" class="form-control" id="contactNumber" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="cnic">CNIC *</label>
+                                <input type="text" class="form-control" id="cnic" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email ID</label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Company Details (initially hidden) -->
+                    <div class="form-section" id="panelCompanyDetailsSection" style="display: none;">
+                        <h3 class="form-section-title">Company Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="companyName">Company Name</label>
+                                <input type="text" class="form-control" id="companyName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="companyContact">Company Contact</label>
+                                <input type="text" class="form-control" id="companyContact" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="companyEmail">Company Email</label>
+                                <input type="email" class="form-control" id="companyEmail" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="width: 100%;">
+                                <label class="form-label" for="companyAddress">Company Address</label>
+                                <textarea class="form-control" id="companyAddress" rows="2" readonly></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="ContractNumberwithpafda">Contract Number with PAFDA</label>
+                                <input type="text" class="form-control" id="contactNumber" readonly>
+                            </div>
+                        </div>
+                        <h4 class="form-subsection-title">Focal Person Details</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="focalPersonName">Focal Person Name</label>
+                                <input type="text" class="form-control" id="focalPersonName" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="focalPersonContact">Contact Number</label>
+                                <input type="text" class="form-control" id="focalPersonContact" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="focalPersonDesignation">Designation</label>
+                                <input type="text" class="form-control" id="focalPersonDesignation" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="focalPersonEmail">Email</label>
+                                <input type="email" class="form-control" id="focalPersonEmail" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Delivery Method Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Delivered Via</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="delivery-options">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="deliverySelf" value="self">
+                                        <label class="form-check-label" for="deliverySelf">Self</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="deliveryAuthorized" value="authorized">
+                                        <label class="form-check-label" for="deliveryAuthorized">Authorized Person</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="deliveryCourier" value="courier">
+                                        <label class="form-check-label" for="deliveryCourier">Courier Service</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Authorized Person Fields (hidden by default) -->
+                        <div class="form-row authorized-person-fields" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedName">Name *</label>
+                                <input type="text" class="form-control" id="authorizedName" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedCnic">CNIC *</label>
+                                <input type="text" class="form-control" id="authorizedCnic" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedContact">Contact Number *</label>
+                                <input type="tel" class="form-control" id="authorizedContact" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row authorized-person-fields" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedStreet">Street No *</label>
+                                <input type="text" class="form-control" id="authorizedStreet" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedArea">Area *</label>
+                                <input type="text" class="form-control" id="authorizedArea" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedAddress">Address *</label>
+                                <input type="text" class="form-control" id="authorizedAddress" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="authorizedreferncenumber">Reference Number *</label>
+                                <input type="text" class="form-control" id="authorizedreferncenumber" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Courier Service Section (hidden by default) -->
+                    <div class="form-section courier-fields" style="display: none;">
+                        <div id="courierSection">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="courierCompany">Company Name *</label>
+                                    <input type="text" class="form-control" id="courierCompany">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="courierContact">Contact *</label>
+                                    <input type="tel" class="form-control" id="courierContact">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="courierAddress">Address *</label>
+                                    <textarea class="form-control" id="courierAddress" rows="3"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="trackingNumber">Parcel Tracking Number *</label>
+                                    <input type="text" class="form-control" id="trackingNumber">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label" for="dispatchDate">Dispatch Date *</label>
+                                        <input type="text" class="form-control" id="dispatchDate">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="Nameofdeliverer">Name of Deliverer</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                 <div class="form-group">
+                                    <label class="form-label" for="contactNumberofdeliverer">Contact Number of Deliverer</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                 <div class="form-group">
+                                    <label class="form-label" for="cnicofdeliverer">CNIC of Deliverer</label>
+                                    <input type="text" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="courierRemarks">Remarks/Notes</label>
+                                    <textarea class="form-control" id="courierRemarks" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Packaging Details Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Packaging Details</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="packagingType">Packaging Type *</label>
+                                <select class="form-control" id="packagingType" required>
+                                    <option value="">-- Select Packaging Type --</option>
+                                    <option value="polythene bag">Polythene Bag</option>
+                                    <option value="plastic bag">Plastic Bag</option>
+                                    <option value="wooden">Wooden</option>
+                                    <option value="cardboard">Cardboard</option>
+                                    <option value="plastic">Plastic</option>
+                                    <option value="glass">Glass</option>
+                                    <option value="metal">Metal</option>
+                                    <option value="fabric">Fabric/Cloth</option>
+                                    <option value="paper">Paper</option>
+                                    <option value="foam">Foam</option>
+                                    <option value="vacuum">Vacuum Sealed</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="sealCondition">Seal Condition *</label>
+                                <select class="form-control" id="sealCondition" required>
+                                    <option value="">-- Select Seal Condition --</option>
+                                    <option value="intact">Intact/Sealed</option>
+                                    <option value="broken">Broken/Unsealed</option>
+                                    <option value="tampered">Tampered</option>
+                                    <option value="leaking">Leaking</option>
+                                    <option value="damaged">Damaged</option>
+                                    <option value="partially_sealed">Partially Sealed</option>
+                                    <option value="resealed">Resealed</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Package Type *</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="packageType" value="single" required> Single Package
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="packageType" value="multiple"> Multiple Packages
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="packageType" value="bulk"> Bulk Packaging
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="packageType" value="individual"> Individual Units
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="noOfSamples">No of Samples *</label>
+                                <input type="number" class="form-control" id="noOfSamples" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="Environmentalconditions">Environmental Condition</label>
+                                <select class="form-control" id="Environmentalconditions" required>
+                                    <option value="">-- Select Environmental Condition --</option>
+                                    <option value="ambiant">Ambiant</option>
+                                    <option value="frozen">Frozen</option>
+                                    <option value="protectedfromlight">Protected from light</option>
+                                    <option value="hotserved">Hotserved</option>
+                                    <option value="refrigerated">refrigerated</option>
+                                    <option value="others">Others</option>
+                                </select>
+                            </div>
+                            </div>
+                            <div class="form-group" style="width: 100%;">
+                                <label class="form-label" for="labelDetails">Label Details</label>
+                                <div style="display: flex; gap: 10px; width: 100%;">
+                                    <input type="text" class="form-control" id="labelDetails" style="flex: 1;" placeholder="Enter label information">
+                                    <label class="btn btn-secondary" style="margin: 0; white-space: nowrap;">
+                                        <i class="fas fa-paperclip"></i> Attach Image
+                                        <input type="file" id="labelImage" accept="image/*" style="display: none;">
+                                    </label>
+                                    <label class="btn btn-secondary" style="margin: 0; white-space: nowrap;">
+                                        <i class="fas fa-paperclip"></i> Open Camera
+                                        <input type="file" id="labelImage" accept="image/*" style="display: none;">
+                                    </label>
+                                </div>
+                                <div id="imagePreview" style="margin-top: 10px; display: none;">
+                                    <img id="previewImage" src="#" alt="Label Preview" style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px;">
+                                    <button type="button" id="removeImage" class="btn btn-sm btn-danger" style="margin-left: 10px;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group" style="width: 100%;">
+                                <label class="form-label" for="packagingNotes">Packaging Notes</label>
+                                <textarea class="form-control" id="packagingNotes" rows="2" placeholder="Any additional notes about the packaging"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Parcel Acceptance Section -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Parcel Acceptance</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Parcel Acceptance Status *</label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        <input type="radio" id="acceptSample" name="sampleStatus" value="accept" checked>
+                                        <label for="acceptSample">Accept</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        <input type="radio" id="rejectSample" name="sampleStatus" value="reject">
+                                        <label for="rejectSample">Reject</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row" id="remarksRow">
+                            <div class="form-group" style="width: 100%;">
+                                <label class="form-label" for="rejectionRemarks">Remarks</label>
+                                <textarea class="form-control" id="rejectionRemarks" rows="2" placeholder="Enter remarks (required if rejected)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Samples Section -->
+                    <div class="form-section" id="samplesSection">
+                        <div class="form-row" style="justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 class="form-section-title" style="margin-bottom: 0;">Samples Management</h3>
+                            <button type="button" class="btn btn-primary" id="addSampleBtn">
+                                <i class="fas fa-plus"></i> Add Sample
+                            </button>
+                        </div>
+                        
+                        <div id="samplesContainer">
+                            <!-- Sample containers will be added here dynamically -->
+                        </div>
+                        
+                        <!-- Grand Total -->
+                        <div class="grand-total">
+                            Grand Total: Rs. <span id="grandTotal">0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary">
+                            <i class="fas fa-save"></i> Save as Draft
+                        </button>
+                        <button type="submit" class="btn btn-primary ml-2">
+                            <i class="fas fa-eye"></i> Preview
+                        </button>
+                        <button type="reset" class="btn btn-outline-secondary ml-2">
+                            <i class="fas fa-undo"></i> Reset Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="preview-modal">
+        <div class="preview-modal-content">
+            <div class="preview-modal-header">
+                <h2>Registration Preview</h2>
+                <span class="close-preview">&times;</span>
+            </div>
+            <div class="preview-modal-body" id="previewContent">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="preview-modal-footer">
+                <button id="printPreviewBtn" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
+                <button class="btn btn-secondary close-preview-btn">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Preview Modal Styles */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            overflow: auto;
+        }
+
+        .preview-modal-content {
+            background-color: #fefefe;
+            margin: 2% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .preview-modal-header h2 {
+            margin: 0;
+            color: #009688;
+        }
+
+        .close-preview {
+            color: #888;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-preview:hover,
+        .close-preview:focus {
+            color: #000;
+            text-decoration: none;
+        }
+
+        .preview-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 5px;
+        }
+
+        .preview-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            margin-top: 15px;
+        }
+
+        .preview-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #009688;
+        }
+
+        .preview-section h3 {
+            margin-top: 0;
+            color: #009688;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .preview-row {
+            display: flex;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            width: 200px;
+            color: #555;
+        }
+
+        .preview-value {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .preview-samples {
+            margin-top: 10px;
+        }
+
+        .preview-sample {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-sample h4 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .preview-modal,
+            .preview-modal * {
+                visibility: visible;
+            }
+            .preview-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+            .preview-modal-content {
+                margin: 0;
+                padding: 15px;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                border: none;
+            }
+            .preview-modal-footer {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        // Sample counter
+        let sampleCounter = 0;
+        
+        // Preview Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the preview button and modal elements
+            const previewBtn = document.querySelector('button[type="submit"].btn-primary');
+            const previewModal = document.getElementById('previewModal');
+            const closePreview = document.querySelector('.close-preview');
+            const closePreviewBtn = document.querySelector('.close-preview-btn');
+            const printBtn = document.getElementById('printPreviewBtn');
+            
+            // Add click event to the preview button
+            if (previewBtn) {
+                previewBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    generatePreview();
+                    previewModal.style.display = 'block';
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                });
+            }
+            
+            // Close modal when clicking the close button
+            if (closePreview) {
+                closePreview.addEventListener('click', function() {
+                    previewModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // Close modal when clicking the close button
+            if (closePreviewBtn) {
+                closePreviewBtn.addEventListener('click', function() {
+                    previewModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // Close modal when clicking outside the modal content
+            window.addEventListener('click', function(event) {
+                if (event.target === previewModal) {
+                    previewModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Print functionality
+            if (printBtn) {
+                printBtn.addEventListener('click', function() {
+                    window.print();
+                });
+            }
+            
+            // Function to generate preview content
+            function generatePreview() {
+                const previewContent = document.getElementById('previewContent');
+                let html = '';
+                
+                // Get form values
+                const registrationNumber = document.querySelector('.registration-number span')?.textContent || 'N/A';
+                const currentDate = new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                // Registration Type
+                const registrationType = document.querySelector('input[name="registrationType"]:checked')?.nextElementSibling?.textContent.trim() || 'Not selected';
+                
+                // Sender Details
+                const senderName = document.getElementById('senderName')?.value || 'N/A';
+                const senderEmail = document.getElementById('senderEmail')?.value || 'N/A';
+                const senderPhone = document.getElementById('senderPhone')?.value || 'N/A';
+                const senderAddress = document.getElementById('senderAddress')?.value || 'N/A';
+                
+                // Company Details (if applicable)
+                let companyDetails = '';
+                const companySection = document.getElementById('panelCompanyDetailsSection');
+                if (companySection && companySection.style.display !== 'none') {
+                    const companyName = document.getElementById('companyName')?.value || 'N/A';
+                    const companyRegNo = document.getElementById('companyRegNo')?.value || 'N/A';
+                    const companyAddress = document.getElementById('companyAddress')?.value || 'N/A';
+                    const companyContact = document.getElementById('companyContact')?.value || 'N/A';
+                    
+                    companyDetails = `
+                        <div class="preview-row">
+                            <div class="preview-label">Company Name:</div>
+                            <div class="preview-value">${companyName}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Registration Number:</div>
+                            <div class="preview-value">${companyRegNo}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Address:</div>
+                            <div class="preview-value">${companyAddress}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Contact Person:</div>
+                            <div class="preview-value">${companyContact}</div>
+                        </div>`;
+                }
+                
+                // Delivery Method
+                const deliveryMethod = document.querySelector('input[name="deliveryMethod"]:checked')?.nextElementSibling?.textContent.trim() || 'Not selected';
+                
+                // Parcel Acceptance
+                const parcelStatus = document.querySelector('input[name="sampleStatus"]:checked')?.nextElementSibling?.textContent.trim() || 'Not selected';
+                const rejectionRemarks = document.getElementById('rejectionRemarks')?.value || 'N/A';
+                
+                // Build the preview HTML
+                html = `
+                    <div class="preview-section">
+                        <h3>Registration Information</h3>
+                        <div class="preview-row">
+                            <div class="preview-label">Registration Number:</div>
+                            <div class="preview-value">${registrationNumber}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Date & Time:</div>
+                            <div class="preview-value">${currentDate}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Registration Type:</div>
+                            <div class="preview-value">${registrationType}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h3>Sender Details</h3>
+                        <div class="preview-row">
+                            <div class="preview-label">Name:</div>
+                            <div class="preview-value">${senderName}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Email:</div>
+                            <div class="preview-value">${senderEmail}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Phone:</div>
+                            <div class="preview-value">${senderPhone}</div>
+                        </div>
+                        <div class="preview-row">
+                            <div class="preview-label">Address:</div>
+                            <div class="preview-value">${senderAddress}</div>
+                        </div>
+                    </div>`;
+                
+                // Add Company Details if available
+                if (companyDetails) {
+                    html += `
+                    <div class="preview-section">
+                        <h3>Company Details</h3>
+                        ${companyDetails}
+                    </div>`;
+                }
+                
+                // Add Delivery and Parcel Information
+                html += `
+                    <div class="preview-section">
+                        <h3>Delivery Information</h3>
+                        <div class="preview-row">
+                            <div class="preview-label">Delivery Method:</div>
+                            <div class="preview-value">${deliveryMethod}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="preview-section">
+                        <h3>Parcel Acceptance</h3>
+                        <div class="preview-row">
+                            <div class="preview-label">Status:</div>
+                            <div class="preview-value">${parcelStatus}</div>
+                        </div>`;
+                
+                if (parcelStatus === 'Reject') {
+                    html += `
+                        <div class="preview-row">
+                            <div class="preview-label">Rejection Remarks:</div>
+                            <div class="preview-value">${rejectionRemarks}</div>
+                        </div>`;
+                }
+                
+                // Add Samples Information
+                const samplesContainer = document.getElementById('samplesContainer');
+                if (samplesContainer && samplesContainer.children.length > 0) {
+                    html += `
+                    <div class="preview-section">
+                        <h3>Samples</h3>
+                        <div class="preview-samples">`;
+                    
+                    // Loop through each sample
+                    const samples = samplesContainer.querySelectorAll('.sample-container');
+                    samples.forEach((sample, index) => {
+                        const sampleNumber = index + 1;
+                        const sampleType = sample.querySelector('.sample-type')?.textContent || 'N/A';
+                        const sampleDescription = sample.querySelector('.sample-description')?.value || 'No description';
+                        const sampleQuantity = sample.querySelector('.sample-quantity')?.value || '1';
+                        const sampleCondition = sample.querySelector('.sample-condition')?.value || 'N/A';
+                        
+                        // Get selected tests
+                        let testsList = '';
+                        const selectedTests = sample.querySelectorAll('.selected-test');
+                        if (selectedTests.length > 0) {
+                            testsList = '<ul style="margin: 5px 0 0 20px; padding: 0;">';
+                            selectedTests.forEach(test => {
+                                const testName = test.querySelector('.test-name')?.textContent || 'N/A';
+                                testsList += `<li>${testName}</li>`;
+                            });
+                            testsList += '</ul>';
+                        } else {
+                            testsList = 'No tests selected';
+                        }
+                        
+                        html += `
+                            <div class="preview-sample">
+                                <h4>Sample #${sampleNumber}: ${sampleType}</h4>
+                                <div class="preview-row">
+                                    <div class="preview-label">Description:</div>
+                                    <div class="preview-value">${sampleDescription}</div>
+                                </div>
+                                <div class="preview-row">
+                                    <div class="preview-label">Quantity:</div>
+                                    <div class="preview-value">${sampleQuantity}</div>
+                                </div>
+                                <div class="preview-row">
+                                    <div class="preview-label">Condition:</div>
+                                    <div class="preview-value">${sampleCondition}</div>
+                                </div>
+                                <div class="preview-row">
+                                    <div class="preview-label">Tests:</div>
+                                    <div class="preview-value">${testsList}</div>
+                                </div>
+                            </div>`;
+                    });
+                    
+                    // Add Grand Total
+                    const grandTotal = document.getElementById('grandTotal')?.textContent || '0.00';
+                    html += `
+                            <div style="margin-top: 15px; text-align: right; font-weight: bold; font-size: 1.1em;">
+                                Grand Total: Rs. ${grandTotal}
+                            </div>`;
+                    
+                    html += `
+                        </div>
+                    </div>`;
+                }
+                
+                // Set the preview content
+                previewContent.innerHTML = html;
+            }
+        });
+        
+        // Lab and sample type data with tests
+        const labData = {
+            // Food Lab
+            food: {
+                name: 'Food',
+                subLabs: [
+                    { id: 'fc', name: 'Food Chemistry' },
+                    { id: 'fm', name: 'Food Microbiology' }
+                ],
+                sampleCategories: {
+                    'fats_oils': 'Fats and Oils',
+                    'food_additives': 'Food Additives',
+                    'antibiotic_residues': 'Antibiotic Residues & Hormones',
+                    'aflatoxin': 'Aflatoxin',
+                    'milk_products': 'Milk and Milk Products',
+                    'bakery': 'Bakery and Bakery Wares',
+                    'egg_products': 'Egg and Egg Products'
+                },
+                tests: {
+                    fc: {
+                        fats_oils: [
+                            { code: 'FC.001.001', name: 'Determination of moisture content Oils & Fats (Air Oven Method)', requirements: '100 g in airtight glass jar (1 liter over all)', fee: 2500 },
+                            { code: 'FC.001.002', name: 'Determination of free fatty acids (acid value) in crude and refined oil', requirements: '100 ml in sealed bottle (1 liter over all)', fee: 3000 },
+                            { code: 'FC.001.003', name: 'Determination of Saponification Value', requirements: '100 g in clean container (1 liter over all)', fee: 3500 }
+                        ],
+                        food_additives: [
+                            { code: 'FC.014.001', name: 'Detection of synthetic colours in food samples by TLC', requirements: '100-200 gm', fee: 4000 },
+                            { code: 'FC.014.002', name: 'Detection of synthetic colours in food samples by HPLC', requirements: '100-200 gm', fee: 5000 },
+                            { code: 'FC.014.003', name: 'Determination of saccharin in food samples', requirements: '100-200 gm', fee: 3500 }
+                        ],
+                        antibiotic_residues: [
+                            { code: 'FC.015.001', name: 'Determination of chloramphenicol – HPLC-MS/MS method', requirements: '100-200 gm', fee: 8000 },
+                            { code: 'FC.015.002', name: 'Determination of nitrofuran metabolites – HPLC-MS/MS method', requirements: '100-200 gm', fee: 8500 },
+                            { code: 'FC.015.003', name: 'Determination of tetracyclines – HPLC-UV/DAD / LC-MS/MS method', requirements: '100-200 gm', fee: 9000 }
+                        ],
+                        aflatoxin: [
+                            { code: 'FC.016.001', name: 'Determination of aflatoxins (for groundnuts and groundnut products, oilseeds and food grains) – CB method', requirements: '100-200 gm', fee: 7000 },
+                            { code: 'FC.016.002', name: 'Determination of aflatoxins - Romer Minicolumn method', requirements: '100-200 gm', fee: 6500 },
+                            { code: 'FC.016.003', name: 'Determination of aflatoxins in corn and peanut powder / butter - Liquid Chromatographic method', requirements: '100-200 gm', fee: 7500 }
+                        ]
+                    },
+                    fm: {
+                        milk_products: [
+                            { code: 'FM.002.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 },
+                            { code: 'FM.002.002', name: 'TPC of Yeast', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 },
+                            { code: 'FM.002.003', name: 'TPC of Mold', requirements: '1L or kg, Pouched, plastic or glass container, sealed, leak proof, food grade container', fee: 3000 }
+                        ],
+                        bakery: [
+                            { code: 'FM.011.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 },
+                            { code: 'FM.011.002', name: 'TPC of Yeast', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 },
+                            { code: 'FM.011.003', name: 'TPC of Mold', requirements: '14 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 3500 }
+                        ],
+                        egg_products: [
+                            { code: 'FM.012.001', name: 'Total plate count (TPC)/Aerobic Plate count (APC) of Bacteria', requirements: '1 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 },
+                            { code: 'FM.012.002', name: 'TPC of Yeast', requirements: '2 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 },
+                            { code: 'FM.012.003', name: 'TPC of Mold', requirements: '3 Kg, pouched, plastic and glass container, leak proof, food grade', fee: 4000 }
+                        ]
+                    }
+                },
+            // Drug Lab
+            drug: {
+                name: 'Drug',
+                subLabs: [
+                    { id: 'dc', name: 'Drug Chemistry' },
+                    { id: 'dm', name: 'Drug Microbiology' }
+                ],
+                sampleCategories: {
+                    'tablets': 'Tablets',
+                    'capsules': 'Capsules',
+                    'syrups': 'Syrups',
+                    'suspensions': 'Suspensions',
+                    'ointments': 'Ointments',
+                    'cosmetics': 'Cosmetics',
+                    'suspected_material': 'Suspected Material'
+                },
+                tests: {
+                    dc: {
+                        tablets: [
+                            { code: 'DC.001.001', name: 'Physical Description of Tablets', requirements: 'As per recommended guidelines/label claim', fee: 2000 },
+                            { code: 'DC.001.002', name: 'Weight Variation of Tablets', requirements: 'As per recommended guidelines/label claim', fee: 2500 },
+                            { code: 'DC.001.003', name: 'Tablet Friability', requirements: 'As per recommended guidelines/label claim', fee: 3000 }
+                        ],
+                        capsules: [
+                            { code: 'DC.002.001', name: 'Physical Description of Capsules', requirements: 'As per recommended guidelines/label claim', fee: 2200 },
+                            { code: 'DC.002.002', name: 'Weight Variation of Capsules', requirements: 'As per recommended guidelines/label claim', fee: 2700 },
+                            { code: 'DC.002.003', name: 'Capsule Disintegration', requirements: 'As per recommended guidelines/label claim', fee: 3200 }
+                        ],
+                        syrups: [
+                            { code: 'DC.005.001', name: 'Assay of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2800 },
+                            { code: 'DC.005.002', name: 'Identification of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2300 },
+                            { code: 'DC.005.003', name: 'pH of Syrups', requirements: 'As per recommended guidelines/label claim', fee: 2000 }
+                        ],
+                        suspensions: [
+                            { code: 'DC.006.001', name: 'Assay of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 3000 },
+                            { code: 'DC.006.002', name: 'Identification of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 2500 },
+                            { code: 'DC.006.003', name: 'pH of Suspensions', requirements: 'As per recommended guidelines/label claim', fee: 2200 }
+                        ],
+                        ointments: [
+                            { code: 'DC.007.001', name: 'Assay of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 3200 },
+                            { code: 'DC.007.002', name: 'Identification of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 2700 },
+                            { code: 'DC.007.003', name: 'pH of Ointments', requirements: 'As per recommended guidelines/label claim', fee: 2400 }
+                        ],
+                        cosmetics: [
+                            { code: 'DC.030.001', name: 'Assay of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 3500 },
+                            { code: 'DC.030.002', name: 'Identification of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 3000 },
+                            { code: 'DC.030.003', name: 'pH of Cosmetics', requirements: 'As per recommended guidelines/label claim', fee: 2500 }
+                        ],
+                        suspected_material: [
+                            { code: 'DC.030.025', name: 'Color Test Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 5000 },
+                            { code: 'DC.030.026', name: 'Pharmaceutical Identification Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 5500 },
+                            { code: 'DC.030.027', name: 'Thin Layer Chromatography Suspected Material', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 6000 }
+                        ]
+                    },
+                    dm: {
+                        tablets: [
+                            { code: 'DM.001.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 4500 },
+                            { code: 'DM.001.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 6000 },
+                            { code: 'DM.001.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 Tablets, Container: Sealed Blister or Bottle, Preservative: None', fee: 5500 }
+                        ],
+                        capsules: [
+                            { code: 'DM.002.004', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 4700 },
+                            { code: 'DM.002.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 6200 },
+                            { code: 'DM.002.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 Capsules, Container: Sealed Blister or Bottle, Preservative: None', fee: 5700 }
+                        ],
+                        syrups: [
+                            { code: 'DM.005.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5000 },
+                            { code: 'DM.005.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6500 },
+                            { code: 'DM.005.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6000 }
+                        ],
+                        suspensions: [
+                            { code: 'DM.006.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5200 },
+                            { code: 'DM.006.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6700 },
+                            { code: 'DM.006.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 100 mL, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6200 }
+                        ],
+                        ointments: [
+                            { code: 'DM.007.007', name: 'Microbial Enumeration Test', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 5500 },
+                            { code: 'DM.007.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 7000 },
+                            { code: 'DM.007.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: 'Amount: 50 g, Container: Sealed HDPE/glass jar, Preservative: None', fee: 6500 }
+                        ],
+                        cosmetics: [
+                            { code: 'DM.031.007', name: 'Microbial Enumeration', requirements: '05 units', fee: 4000 },
+                            { code: 'DM.031.008', name: 'Test for specific organism (Escherichia coli, Staphylococcus aureus, Pseudomonas aeruginosa, Candida albicans, bile-tolerant Gram-negative bacteria)', requirements: '05 units', fee: 5500 },
+                            { code: 'DM.031.019', name: 'Test for Burkholderia Cepacia Complex (BCC)', requirements: '05 units', fee: 5000 }
+                        ],
+                        suspected_material: [
+                            { code: 'DM.035.001', name: 'Microbial Identification', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 7000 },
+                            { code: 'DM.035.002', name: 'Fungal Identification', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 7500 },
+                            { code: 'DM.035.003', name: 'Antimicrobial Susceptibility Testing', requirements: 'As per sample submission Policy or UNODC/SWGDRUG Sampling guidelines', fee: 8000 }
+                        ]
+                    }
+                }
+            }
+        },
+            // Agricultural Lab
+            agricultural: {
+                name: 'Agricultural',
+                subLabs: [
+                    { id: 'ac', name: 'Agricultural Chemistry' },
+                    { id: 'am', name: 'Agricultural Microbiology' }
+                ],
+                sampleCategories: {
+                    'pesticides': 'Pesticides',
+                    'fertilizers': 'Fertilizers',
+                    'seeds': 'Seeds',
+                    'soil': 'Soil Samples'
+                },
+                tests: {
+                    ac: {
+                        pesticides: [
+                            { code: 'AC.001.001', name: 'Determination of pesticide active ingredient by gas chromatography', requirements: '250 ml (liquid)/ 250g (solid)', fee: 5000 },
+                            { code: 'AC.001.002', name: 'Determination of pesticide active ingredient by HPLC', requirements: '250 ml (liquid)/ 250g (solid)', fee: 5500 },
+                            { code: 'AC.001.005', name: 'Determination of pH of pesticide', requirements: '250 ml (liquid)/ 250g (solid)', fee: 3000 }
+                        ],
+                        fertilizers: [
+                            { code: 'AC.002.001', name: 'Estimation of nitrogen in fertilizer by Kjeldahl method', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4500 },
+                            { code: 'AC.002.002', name: 'Estimation of phosphorus in fertilizer by Vanado Phospho Molybdate Method', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4500 },
+                            { code: 'AC.002.003', name: 'Estimation of potassium in fertilizer by flame photometer', requirements: '250 ml (liquid)/ 250g (solid)', fee: 4000 }
+                        ]
+                    },
+                    am: {
+                        seeds: [
+                            { code: 'AM.007.001', name: 'Physical Purity Analysis', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 3500 },
+                            { code: 'AM.007.002', name: 'Germination Test', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 4000 },
+                            { code: 'AM.007.003', name: 'Seed Health Testing', requirements: '500g to 1 kg Sterile, airtight containers glass jars or plastic zip bags', fee: 4500 }
+                        ],
+                        soil: [
+                            { code: 'AM.002.001', name: 'Mango Anthracnose Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 },
+                            { code: 'AM.002.002', name: 'Mango Malformation Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 },
+                            { code: 'AM.002.003', name: 'Citrus canker Pathogen Detection', requirements: '5-100g, paper bags', fee: 5000 }
+                        ]
+                    }
+                }
+            }
+        };
+
+        // Function to toggle test search section based on sample acceptance status
+        function toggleSampleTestSearch(sampleId) {
+            console.log(`toggleSampleTestSearch called for sample ${sampleId}`);
+            const testSearchSection = document.getElementById(`testSearchSection_${sampleId}`);
+            const rejectRadio = document.getElementById(`sampleReject_${sampleId}`);
+            
+            console.log('testSearchSection:', testSearchSection);
+            console.log('rejectRadio:', rejectRadio);
+            
+            if (testSearchSection && rejectRadio) {
+                const shouldHide = rejectRadio.checked;
+                console.log(`Setting testSearchSection display to ${shouldHide ? 'none' : 'flex'}`);
+                testSearchSection.style.display = shouldHide ? 'none' : 'flex';
+                
+                // If showing the test search section, update the test selection
+                if (!shouldHide) {
+                    console.log('Updating test selection for sample', sampleId);
+                    updateTestSelection(sampleId);
+                }
+            } else {
+                console.error('Could not find required elements for toggleSampleTestSearch');
+            }
+        }
+
+        // Function to toggle sample management section based on acceptance status
+        function toggleSampleManagement() {
+            console.log('toggleSampleManagement called');
+            const samplesSection = document.getElementById('samplesSection');
+            const rejectRadio = document.getElementById('rejectSample');
+            const remarksField = document.getElementById('rejectionRemarks');
+            const remarksRow = document.getElementById('remarksRow');
+            
+            console.log('samplesSection:', samplesSection);
+            console.log('rejectRadio:', rejectRadio);
+            console.log('remarksField:', remarksField);
+            console.log('remarksRow:', remarksRow);
+            
+            if (samplesSection && rejectRadio && remarksField && remarksRow) {
+                const isRejected = rejectRadio.checked;
+                console.log(`Sample rejection status: ${isRejected ? 'Rejected' : 'Accepted'}`);
+                
+                if (isRejected) {
+                    console.log('Hiding samples section and showing remarks');
+                    samplesSection.style.display = 'none';
+                    remarksRow.style.display = 'flex';
+                    remarksField.required = true;
+                } else {
+                    console.log('Showing samples section and hiding remarks');
+                    samplesSection.style.display = 'block';
+                    remarksRow.style.display = 'none';
+                    remarksField.required = false;
+                }
+            } else {
+                console.error('Could not find all required elements for toggleSampleManagement');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners for sample acceptance radio buttons
+            const sampleStatusRadios = document.querySelectorAll('input[name="sampleStatus"]');
+            sampleStatusRadios.forEach(radio => {
+                radio.addEventListener('change', toggleSampleManagement);
+            });
+            
+            // Initialize the visibility
+            toggleSampleManagement();
+            
+            // Registration type toggle
+            const registrationTypeRadios = document.querySelectorAll('input[name="registrationType"]');
+            const panelCompanyRow = document.getElementById('panelCompanyRow');
+            const senderDetailsSection = document.getElementById('senderDetailsSection');
+            const panelCompanyDetailsSection = document.getElementById('panelCompanyDetailsSection');
+
+            registrationTypeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'panel') {
+                        panelCompanyRow.style.display = 'flex';
+                        senderDetailsSection.style.display = 'none';
+                        panelCompanyDetailsSection.style.display = 'block';
+                    } else {
+                        panelCompanyRow.style.display = 'none';
+                        senderDetailsSection.style.display = 'block';
+                        panelCompanyDetailsSection.style.display = 'none';
+                        // Clear panel company details when switching back to individual
+                        clearPanelCompanyDetails();
+                    }
+                });
+            });
+
+            // Add sample button click handler
+            const addSampleBtn = document.getElementById('addSampleBtn');
+            if (addSampleBtn) {
+                addSampleBtn.addEventListener('click', addNewSample);
+            }
+            
+            // Add first sample automatically but keep it collapsed
+            addNewSample();
+            
+            // Delivery method toggle
+            const deliveryToggles = document.querySelectorAll('.delivery-options .form-check-input');
+            const authorizedPersonFields = document.querySelectorAll('.authorized-person-fields');
+            const courierFields = document.querySelector('.courier-fields');
+            const courierCheck = document.getElementById('courierCheck');
+
+            // Remove the original courier checkbox event listener
+            if (courierCheck) {
+                courierCheck.addEventListener('change', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
+            // Initialize with self delivery
+            const deliverySelf = document.getElementById('deliverySelf');
+            if (deliverySelf) {
+                deliverySelf.checked = true;
+            }
+
+            // Hide all fields initially
+            authorizedPersonFields.forEach(field => {
+                field.style.display = 'none';
+            });
+            if (courierFields) {
+                courierFields.style.display = 'none';
+            }
+
+            // Add event listeners to delivery toggles
+            deliveryToggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    // Uncheck other toggles
+                    deliveryToggles.forEach(other => {
+                        if (other !== this) {
+                            other.checked = false;
+                        }
+                    });
+
+                    // Handle field visibility
+                    if (this.id === 'deliveryAuthorized' && this.checked) {
+                        // Show authorized person fields
+                        authorizedPersonFields.forEach(field => {
+                            field.style.display = 'flex';
+                        });
+                        // Hide courier fields
+                        if (courierFields) {
+                            courierFields.style.display = 'none';
+                        }
+                        if (courierCheck) {
+                            courierCheck.checked = false;
+                        }
+                    } else if (this.id === 'deliveryCourier' && this.checked) {
+                        // Show courier fields
+                        if (courierFields) {
+                            courierFields.style.display = 'block';
+                        }
+                        if (courierCheck) {
+                            courierCheck.checked = true;
+                        }
+                        // Hide authorized person fields
+                        authorizedPersonFields.forEach(field => {
+                            field.style.display = 'none';
+                        });
+                    } else {
+                        // Hide all fields
+                        authorizedPersonFields.forEach(field => {
+                            field.style.display = 'none';
+                        });
+                        if (courierFields) {
+                            courierFields.style.display = 'none';
+                        }
+                        if (courierCheck) {
+                            courierCheck.checked = false;
+                        }
+                    }
+                });
+            });
+        });
+
+        // Function to add a new sample
+        function addNewSample() {
+            sampleCounter++;
+            const sampleId = sampleCounter;
+            
+            const sampleContainer = document.createElement('div');
+            sampleContainer.className = 'sample-container';
+            sampleContainer.id = `sample_${sampleId}`;
+            sampleContainer.dataset.sampleId = sampleId;
+            
+            sampleContainer.innerHTML = `
+                <div class="sample-header" onclick="toggleSample('${sampleId}')">
+                    <div class="sample-title">Sample #${sampleId}</div>
+                    <div class="sample-actions">
+                        <button type="button" class="btn btn-danger btn-sm remove-sample" onclick="event.stopPropagation(); removeSample('${sampleId}')">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="sample-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="labSelect_${sampleId}">Select Lab *</label>
+                            <select class="form-control lab-select" id="labSelect_${sampleId}" required onchange="updateSampleTypes('${sampleId}')">
+                                <option value="">-- Select Lab --</option>
+                                <option value="food">Food Lab</option>
+                                <option value="drug">Drug Lab</option>
+                                <option value="agricultural">Agricultural Lab</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="sealCondition_${sampleId}">Seal Condition *</label>
+                            <select class="form-control" id="sealCondition_${sampleId}" required>
+                                <option value="">-- Select Seal Condition --</option>
+                                <option value="intact">Intact/Sealed</option>
+                                <option value="broken">Broken/Unsealed</option>
+                                <option value="tampered">Tampered</option>
+                                <option value="leaking">Leaking</option>
+                                <option value="damaged">Damaged</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="memorandumNumber_${sampleId}">Memorandum Number *</label>
+                            <input type="text" class="form-control" id="memorandumNumber_${sampleId}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="memorandumDate_${sampleId}">Memorandum Date *</label>
+                            <input type="date" class="form-control" id="memorandumDate_${sampleId}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0 0 30%;">
+                            <label class="form-label" for="quantityType_${sampleId}">Quantity Type *</label>
+                            <select class="form-control" id="quantityType_${sampleId}" required>
+                                <option value="">-- Select Type --</option>
+                                <option value="volume">Volume</option>
+                                <option value="weight">Weight</option>
+                                <option value="pack_size">Pack Size</option>
+                                <option value="number_of_units">Number of Units</option>
+                                <option value="number_of_packs">Number of Packs</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 0 0 30%;">
+                            <label class="form-label" for="quantityValue_${sampleId}">Quantity *</label>
+                            <input type="text" class="form-control" id="quantityValue_${sampleId}" required>
+                        </div>
+                        <div class="form-group" style="flex: 0 0 30%;">
+                            <label class="form-label" for="unit_${sampleId}">Unit</label>
+                            <input type="text" class="form-control" id="unit_${sampleId}" placeholder="e.g., ml, g, kg, etc.">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="brandName_${sampleId}">Brand Name *</label>
+                            <input type="text" class="form-control" id="brandName_${sampleId}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="activeIngredients_${sampleId}">Active Ingredients</label>
+                            <input type="text" class="form-control" id="activeIngredients_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="inertMaterial_${sampleId}">Inert Material</label>
+                            <input type="text" class="form-control" id="inertMaterial_${sampleId}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="manufacturerName_${sampleId}">Manufacturer Name *</label>
+                            <input type="text" class="form-control" id="manufacturerName_${sampleId}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="manufacturingdate_${sampleId}">Manufacturing Date</label>
+                            <input type="date" class="form-control" id="manufacturingdate_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="licenseNumber_${sampleId}">License Number</label>
+                            <input type="text" class="form-control" id="licenseNumber_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="batchNumber_${sampleId}">Batch/Lot Number *</label>
+                            <input type="text" class="form-control" id="batchNumber_${sampleId}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="importerName_${sampleId}">Importer Name</label>
+                            <input type="text" class="form-control" id="importerName_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="importerAddress_${sampleId}">Importer Address</label>
+                            <input type="text" class="form-control" id="importerAddress_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="distributor_${sampleId}">Distributor</label>
+                            <input type="text" class="form-control" id="distributor_${sampleId}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="registrationNumber_${sampleId}">Registration Number</label>
+                            <input type="text" class="form-control" id="registrationNumber_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="sampleCollectionDate_${sampleId}">Sample Collection Date</label>
+                            <input type="date" class="form-control" id="sampleCollectionDate_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="expiryDate_${sampleId}">Expiry Date</label>
+                            <input type="date" class="form-control" id="expiryDate_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="barcodeNumber_${sampleId}">Barcode Number</label>
+                            <input type="text" class="form-control" id="barcodeNumber_${sampleId}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="barcodeNumber_${sampleId}">Barcode Number</label>
+                            <input type="text" class="form-control" id="barcodeNumber_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="handlingInstructions_${sampleId}">Handling Instructions</label>
+                            <input type="text" class="form-control" id="handlingInstructions_${sampleId}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="offenderDetails_${sampleId}">Offender Details</label>
+                            <input type="text" class="form-control" id="offenderDetails_${sampleId}">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="width: 100%;">
+                            <label class="form-label" for="specifications_${sampleId}">Specifications</label>
+                            <textarea class="form-control" id="specifications_${sampleId}" rows="2"></textarea>
+                        </div>
+                        <div class="form-group" style="width: 100%;">
+                            <label class="form-label" for="additionalNote_${sampleId}">Additional Note</label>
+                            <textarea class="form-control" id="additionalNote_${sampleId}" rows="2"></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Sub-Lab *</label>
+                            <select class="form-control sublab-select" onchange="updateTestSelection('${sampleId}')">
+                                <option value="">Select Sub-Lab</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sample Category *</label>
+                            <select class="form-control sample-category-select" onchange="updateTestSelection('${sampleId}')">
+                                <option value="">Select Sample Category</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sample Acceptance Status *</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="sampleAccept_${sampleId}" name="sampleAcceptance_${sampleId}" value="accept" checked onchange="toggleSampleTestSearch('${sampleId}')">
+                                    <label for="sampleAccept_${sampleId}">Accept</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="sampleReject_${sampleId}" name="sampleAcceptance_${sampleId}" value="reject" onchange="toggleSampleTestSearch('${sampleId}')">
+                                    <label for="sampleReject_${sampleId}">Reject</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row" id="testSearchSection_${sampleId}">
+                        <div class="form-group" style="width: 100%;">
+                            <label class="form-label">Search and Select Tests *</label>
+                            <div class="test-search-container">
+                                <div class="search-wrapper">
+                                    <input type="text" 
+                                           id="testSearch_${sampleId}" 
+                                           class="form-control test-search" 
+                                           placeholder="Search tests by code, name, or requirements..."
+                                           onkeyup="filterTests('${sampleId}', event)">
+                                    <i class="fas fa-search search-icon"></i>
+                                </div>
+                                <div class="test-table-scroll">
+                                    <table class="test-selection-table" id="testSelectionTable_${sampleId}">
+                                        <thead>
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Test Name</th>
+                                                <th>Requirements</th>
+                                                <th>Price (Rs.)</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="testTableBody_${sampleId}">
+                                            <!-- Tests will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="selected-tests" id="selectedTests_${sampleId}">
+                                    <!-- Selected tests will be shown here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="test-table-container">
+                        <table class="test-fee-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Test Name</th>
+                                    <th>Requirements</th>
+                                    <th>Fee (Rs.)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="selectedTestsTable_${sampleId}">
+                                <!-- Selected test rows will be added here -->
+                            </tbody>
+                        </table>
+                        
+                        <div class="total-amount">
+                            Total Amount: Rs. <span id="totalAmount_${sampleId}">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add the new sample to the container
+            const samplesContainer = document.getElementById('samplesContainer');
+            samplesContainer.appendChild(sampleContainer);
+            
+            // Initialize test selection when a new sample is added
+            const labSelect = document.getElementById(`labSelect_${sampleId}`);
+            if (labSelect) {
+                labSelect.addEventListener('change', function() {
+                    updateSampleTypes(sampleId);
+                });
+            }
+            
+            // Expand the newly added sample
+            toggleSample(sampleId);
+            
+            // Initialize the test search section visibility
+            toggleSampleTestSearch(sampleId);
+            
+            return sampleContainer;
+        }
+        
+        // Toggle sample content visibility
+        function toggleSample(sampleId) {
+            console.log(`toggleSample called for sample ${sampleId}`);
+            const sample = document.getElementById(`sample_${sampleId}`);
+            console.log('Sample element:', sample);
+            
+            if (sample) {
+                const isExpanded = sample.classList.toggle('expanded');
+                console.log(`Sample ${sampleId} is now ${isExpanded ? 'expanded' : 'collapsed'}`);
+                
+                // If expanding the sample, ensure the test selection is up to date
+                if (isExpanded) {
+                    console.log('Updating test selection for expanded sample', sampleId);
+                    updateTestSelection(sampleId);
+                }
+            } else {
+                console.error(`Could not find sample element with ID sample_${sampleId}`);
+            }
+        }
+        
+        // Update sub-labs and sample categories based on selected lab
+        function updateSampleTypes(sampleId) {
+            const sampleContainer = document.getElementById(`sample_${sampleId}`);
+            if (!sampleContainer) return;
+            
+            const labSelect = sampleContainer.querySelector('.lab-select');
+            const subLabSelect = sampleContainer.querySelector('.sublab-select');
+            const sampleCategorySelect = sampleContainer.querySelector('.sample-category-select');
+            
+            if (!labSelect || !subLabSelect || !sampleCategorySelect) return;
+            
+            // Clear existing options
+            subLabSelect.innerHTML = '<option value="">Select Sub-Lab</option>';
+            sampleCategorySelect.innerHTML = '<option value="">Select Sample Category</option>';
+            
+            // Get selected lab
+            const selectedLab = labSelect.value;
+            console.log('Selected lab:', selectedLab); // Debug log
+            
+            if (selectedLab && labData[selectedLab]) {
+                const lab = labData[selectedLab];
+                console.log('Lab data:', lab); // Debug log
+                
+                // Add sub-labs
+                if (lab.subLabs && lab.subLabs.length > 0) {
+                    console.log('Adding sub-labs:', lab.subLabs); // Debug log
+                    lab.subLabs.forEach(sublab => {
+                        const option = document.createElement('option');
+                        option.value = sublab.id;
+                        option.textContent = sublab.name;
+                        subLabSelect.appendChild(option);
+                    });
+                }
+                
+                // Add sample categories
+                if (lab.sampleCategories) {
+                    console.log('Adding sample categories:', lab.sampleCategories); // Debug log
+                    for (const [value, text] of Object.entries(lab.sampleCategories)) {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.textContent = text;
+                        sampleCategorySelect.appendChild(option);
+                    }
+                }
+            } else {
+                console.log('No lab selected or lab data not found'); // Debug log
+            }
+            
+            // Reset test selection
+            updateTestSelection(sampleId);
+        }
+        
+        // Update test selection based on selected sub-lab and sample category
+        function updateTestSelection(sampleId) {
+            console.log('updateTestSelection called with sampleId:', sampleId); // Debug log
+            
+            const sampleContainer = document.getElementById(`sample_${sampleId}`);
+            if (!sampleContainer) {
+                console.error('Sample container not found for sampleId:', sampleId);
+                return;
+            }
+            
+            const labSelect = sampleContainer.querySelector('.lab-select');
+            const subLabSelect = sampleContainer.querySelector('.sublab-select');
+            const sampleCategorySelect = sampleContainer.querySelector('.sample-category-select');
+            const testTableBody = document.getElementById(`testTableBody_${sampleId}`);
+            
+            if (!labSelect || !subLabSelect || !sampleCategorySelect || !testTableBody) {
+                console.error('Required elements not found:', { 
+                    labSelect: !!labSelect, 
+                    subLabSelect: !!subLabSelect, 
+                    sampleCategorySelect: !!sampleCategorySelect,
+                    testTableBody: !!testTableBody 
+                });
+                return;
+            }
+            
+            const lab = labSelect.value;
+            const subLab = subLabSelect.value;
+            const sampleCategory = sampleCategorySelect.value;
+            
+            console.log('Selections:', { lab, subLab, sampleCategory }); // Debug log
+            
+            // Clear existing rows
+            testTableBody.innerHTML = '';
+            
+            if (lab && labData[lab] && labData[lab].tests) {
+                console.log('Lab data found:', labData[lab]); // Debug log
+                let tests = [];
+                
+                // If no sub-lab is selected, show all tests for the selected category across all sub-labs
+                if (!subLab) {
+                    console.log('No sub-lab selected, showing tests from all sub-labs'); // Debug log
+                    Object.keys(labData[lab].tests).forEach(sublabId => {
+                        if (labData[lab].tests[sublabId] && labData[lab].tests[sublabId][sampleCategory]) {
+                            console.log(`Adding tests from sub-lab ${sublabId} for category ${sampleCategory}`); // Debug log
+                            tests = tests.concat(labData[lab].tests[sublabId][sampleCategory]);
+                        }
+                    });
+                } 
+                // If sub-lab is selected, only show tests for that sub-lab and category
+                else if (labData[lab].tests[subLab] && labData[lab].tests[subLab][sampleCategory]) {
+                    console.log(`Showing tests for sub-lab ${subLab} and category ${sampleCategory}`); // Debug log
+                    tests = labData[lab].tests[subLab][sampleCategory];
+                } else {
+                    console.log('No tests found for the selected sub-lab and category'); // Debug log
+                }
+                
+                console.log(`Found ${tests.length} tests`); // Debug log
+                
+                // Add tests to the table
+                if (tests.length > 0) {
+                    tests.forEach(test => {
+                        const row = document.createElement('tr');
+                        row.dataset.testCode = test.code;
+                        row.onclick = () => addTestToSelection(sampleId, test.code);
+                        row.style.cursor = 'pointer';
+                        row.innerHTML = `
+                            <td>${test.code}</td>
+                            <td>${test.name}</td>
+                            <td>${test.requirements}</td>
+                            <td>${test.fee.toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="event.stopPropagation(); addTestToSelection('${sampleId}', '${test.code}')">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </td>
+                        `;
+                        testTableBody.appendChild(row);
+                    });
+                } else {
+                    // Show message if no tests found
+                    console.log('No tests found for the selected criteria'); // Debug log
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="5" class="text-center">No tests available for the selected criteria</td>';
+                    testTableBody.appendChild(row);
+                }
+            } else {
+                // Show message if no lab selected or invalid data
+                console.log('No lab selected or invalid lab data'); // Debug log
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="5" class="text-center">Please select a lab, sub-lab, and sample category to view available tests</td>';
+                testTableBody.appendChild(row);
+            }
+            
+            // Clear any selected tests when selection changes
+            const selectedTestsDiv = document.getElementById(`selectedTests_${sampleId}`);
+            if (selectedTestsDiv) {
+                selectedTestsDiv.innerHTML = '';
+            }
+            
+            // Update the test table
+            updateTestTable(sampleId);
+        }
+        
+        // Update the test table with selected tests
+        function filterTests(sampleId, event) {
+            if (event && event.key === 'Enter') {
+                // If Enter is pressed, add the first visible test
+                const firstVisibleRow = document.querySelector(`#testTableBody_${sampleId} tr:not([style*="display: none"])`);
+                if (firstVisibleRow) {
+                    const testCode = firstVisibleRow.dataset.testCode;
+                    addTestToSelection(sampleId, testCode);
+                    // Clear the search after adding
+                    event.target.value = '';
+                    filterTests(sampleId);
+                }
+                return;
+            }
+            
+            const searchInput = document.getElementById(`testSearch_${sampleId}`);
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            const rows = document.querySelectorAll(`#testTableBody_${sampleId} tr`);
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        function addTestToSelection(sampleId, testCode) {
+            const labSelect = document.getElementById(`labSelect_${sampleId}`);
+            const sampleTypeSelect = document.getElementById(`sampleType_${sampleId}`);
+            const selectedTestsDiv = document.getElementById(`selectedTests_${sampleId}`);
+            
+            if (!labSelect || !sampleTypeSelect || !selectedTestsDiv) return;
+            
+            const lab = labSelect.value;
+            const sampleType = sampleTypeSelect.value;
+            
+            if (!lab || !sampleType || !labData[lab] || !labData[lab].tests[sampleType]) return;
+            
+            // Find the test in our data
+            const test = labData[lab].tests[sampleType].find(t => t.code === testCode);
+            if (!test) return;
+            
+            // Check if test is already selected
+            if (document.getElementById(`selected_test_${sampleId}_${testCode}`)) {
+                return; // Already selected
+            }
+            
+            // Create a badge for the selected test
+            const badge = document.createElement('span');
+            badge.className = 'selected-test-badge';
+            badge.id = `selected_test_${sampleId}_${testCode}`;
+            badge.innerHTML = `
+                ${test.name} (${testCode}) - Rs. ${test.price.toFixed(2)}
+                <button onclick="removeTest('${sampleId}', '${testCode}')" class="remove-test">
+                    <i class="fas fa-times"></i>
+                </button>
+                <input type="hidden" name="selected_tests[]" value="${testCode}">
+            `;
+            
+            selectedTestsDiv.appendChild(badge);
+            
+            // Update the test table
+            updateTestTable(sampleId);
+        }
+        
+        function removeTest(sampleId, testCode) {
+            const badge = document.getElementById(`selected_test_${sampleId}_${testCode}`);
+            if (badge) {
+                badge.remove();
+                updateTestTable(sampleId);
+            }
+        }
+        
+        function updateTestTable(sampleId) {
+            const selectedTestsDiv = document.getElementById(`selectedTests_${sampleId}`);
+            const testTableBody = document.getElementById(`selectedTestsTable_${sampleId}`);
+            const totalAmountSpan = document.getElementById(`totalAmount_${sampleId}`);
+            
+            if (!selectedTestsDiv || !testTableBody || !totalAmountSpan) return;
+            
+            // Clear existing rows
+            testTableBody.innerHTML = '';
+            
+            const labSelect = document.getElementById(`labSelect_${sampleId}`);
+            const sampleTypeSelect = document.getElementById(`sampleType_${sampleId}`);
+            
+            if (!labSelect || !sampleTypeSelect) return;
+            
+            const lab = labSelect.value;
+            const sampleType = sampleTypeSelect.value;
+            
+            if (!lab || !sampleType || !labData[lab] || !labData[lab].tests[sampleType]) return;
+            
+            const selectedTestCodes = [];
+            const selectedTestElements = selectedTestsDiv.querySelectorAll('.selected-test-badge');
+            
+            selectedTestElements.forEach(el => {
+                const testCode = el.id.replace(`selected_test_${sampleId}_`, '');
+                selectedTestCodes.push(testCode);
+            });
+            
+            let totalAmount = 0;
+            
+            if (selectedTestCodes.length === 0) {
+                // If no tests are selected, show a message
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="5" style="text-align: center;">No tests selected</td>';
+                testTableBody.appendChild(row);
+            } else {
+                // Add a row for each selected test
+                selectedTestCodes.forEach(testCode => {
+                    const test = labData[lab].tests[sampleType].find(t => t.code === testCode);
+                    if (!test) return;
+                    
+                    totalAmount += test.price;
+                    
+                    const row = document.createElement('tr');
+                    row.dataset.testCode = testCode;
+                    row.innerHTML = `
+                        <td>${test.code}</td>
+                        <td>${test.name}</td>
+                        <td>${test.requirements}</td>
+                        <td>${test.price.toFixed(2)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="removeTest('${sampleId}', '${testCode}')">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </td>
+                    `;
+                    testTableBody.appendChild(row);
+                });
+            }
+            
+            // Update total amount
+            totalAmountSpan.textContent = totalAmount.toFixed(2);
+            // Update the total amount display
+            totalAmountSpan.textContent = totalAmount.toLocaleString();
+            
+            // Update the grand total
+            updateGrandTotal();
+        }
+        
+        // Update the grand total of all samples
+        function updateGrandTotal() {
+            const totalAmounts = document.querySelectorAll('[id^="totalAmount_"]');
+            let grandTotal = 0;
+            
+            totalAmounts.forEach(amountSpan => {
+                const amount = parseFloat(amountSpan.textContent.replace(/,/g, '')) || 0;
+                grandTotal += amount;
+            });
+            
+            const grandTotalElement = document.getElementById('grandTotal');
+            if (grandTotalElement) {
+                grandTotalElement.textContent = grandTotal.toLocaleString();
+            }
+        }
+        
+        // Function to remove a sample
+        function removeSample(sampleId) {
+            if (confirm('Are you sure you want to remove this sample?')) {
+                const sample = document.getElementById(`sample_${sampleId}`);
+                if (sample) {
+                    // Add a fade out effect before removing
+                    sample.style.opacity = '0.5';
+                    sample.style.transition = 'opacity 0.3s';
+                    
+                    setTimeout(() => {
+                        sample.remove();
+                        updateSampleNumbers();
+                        updateGrandTotal();
+                    }, 300);
+                }
+            }
+        }
+        
+        // Update sample numbers after removal
+        function updateSampleNumbers() {
+            const samples = document.querySelectorAll('.sample-container');
+            if (samples.length === 0) {
+                sampleCounter = 0;
+                return;
+            }
+            
+            samples.forEach((container, index) => {
+                const newId = index + 1;
+                const oldId = container.dataset.sampleId;
+                
+                // Update IDs and data attributes
+                container.id = `sample_${newId}`;
+                container.dataset.sampleId = newId;
+                
+                // Update sample number in title
+                const title = container.querySelector('.sample-title');
+                if (title) title.textContent = `Sample #${newId}`;
+                
+                // Update all form fields with new IDs
+                const fields = container.querySelectorAll('[id]');
+                fields.forEach(field => {
+                    field.id = field.id.replace(/_(\d+)(?=[^\d]|$)/, `_${newId}`);
+                    if (field.name) field.name = field.name.replace(/\[(\d+)\]/, `[${newId}]`);
+                    
+                    // Update event handlers
+                    if (field.onchange) {
+                        const oldOnChange = field.onchange.toString();
+                        const newOnChange = oldOnChange.replace(/'(\d+)'/g, `'${newId}'`);
+                        field.onchange = new Function('return ' + newOnChange)();
+                    }
+                });
+            });
+            
+            sampleCounter = samples.length;
+        }
+    </script>
+</body>
+</html>
